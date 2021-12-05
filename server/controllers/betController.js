@@ -1,29 +1,29 @@
-// Controlador para o modelo Dominio
+// Controlador para o model bet
 
-var Domain = require('../models/domain')
+var Bet = require('../models/bet')
 
 // Devolve a lista de Dominios
 module.exports.listar = () => {
-    return Domain
+    return Bet
         .find()
         .exec()
 }
 
 module.exports.consultar = id => {
-    return Domain
+    return Bet
         .findOne({id: id})
         .exec()
 }
 
 module.exports.inserir = d => {
-    var novo = new Domain(d)
+    var novo = new Bet(d)
     return novo.save()
 }
 
 module.exports.remover = function(id){
-    return Domain.deleteOne({id: id})
+    return Bet.deleteOne({id: id})
 }
 
 module.exports.alterar = function(d){
-    return Domain.findByIdAndUpdate({_id: d._id}, d, {new: true})
+    return Bet.findByIdAndUpdate({_id: d._id}, d, {new: true})
 }

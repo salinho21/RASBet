@@ -4,6 +4,7 @@ var betSchema = new mongoose.Schema(
   
     {
         id: String,
+        user_id: String,
         events: [{
             eventID: String,
             odd: String
@@ -14,4 +15,4 @@ var betSchema = new mongoose.Schema(
         date: String
   });
 
-module.exports = mongoose.model('bet', userSchema)
+module.exports = mongoose.model('bet', betSchema)

@@ -1,9 +1,12 @@
 // Roteador do servidor API
 var express = require('express');
 var router = express.Router();
+const bcrypt = require('bcrypt')
 const Bet = require('../controllers/betController')
 const Event = require('../controllers/eventController')
 const User = require('../controllers/userController')
+const UserModel = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 // Listar todas as bets
 router.get('/bet', function(req, res) {
@@ -20,10 +23,24 @@ router.get('/event', function(req, res) {
 });
 
 // Listar todos os utilizadores
-router.get('/user', function(req, res) {
-  User.listar()
-    .then(dados => res.status(200).jsonp(dados) )
-    .catch(e => res.status(500).jsonp({error: e}))
+router.get('/user', (req, res, next) => {
+  let token = req.headers.token;
+  jwt.verify(token, 'secretkey', (error, decoded) =>{
+    if (error) return res.status(401).json({
+      title: 'Unauthorized'
+    })
+
+    UserModel.findOne({ _id: decoded.userId }, (error, user) => {
+      if (error) return console.log(error)
+      return res.status(200).json({
+        title: 'User grabbed',
+        user:{
+          email: user.email,
+          name: user.name
+        }
+      })
+    })
+  })
 });
 
 // Consultar uma bet por id
@@ -61,11 +78,44 @@ router.post('/event', function(req, res){
     .catch(e => res.status(500).jsonp({error: e}))
 })
 
-// Inserir um user
+// Registar um user
 router.post('/user', function(req, res){
-  User.inserir(req.body)
+  const newUser = {
+    email: req.body.email,
+    name: req.body.name,
+    password: bcrypt.hashSync(req.body.password, 10),
+    type: 'User'
+  }
+  User.inserir(newUser)
     .then(dados => res.status(201).jsonp({dados: dados}))
-    .catch(e => res.status(500).jsonp({error: e}))
+    .catch(e => res.status(500).jsonp({error: 'Email in use'}))
+})
+
+// Efetuar Login de um user
+router.post('/login', (req,res, next) =>{
+  UserModel.findOne({ email: req.body.email }, (err, user) =>{
+    if(err) return res.status(500).json({
+      title: 'Server error',
+      error: err
+    })
+    if(!user) {
+      return res.status(401).json({
+        title: 'User not found',
+        error: 'Invalid Credentials'
+      })
+    }
+    if(!bcrypt.compareSync(req.body.password, user.password)){
+      return res.status(401).json({
+        title: 'Login failed',
+        error: 'Invalid Credentials'
+      })
+    }
+    let token = jwt.sign({userId: UserModel._id}, 'secretkey');
+    return res.status(201).json({
+      title: 'Login successful',
+      token: token
+    })
+  })
 })
 
 // Editar uma bet

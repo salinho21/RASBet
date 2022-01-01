@@ -7,7 +7,7 @@ var indexRouter = require('./routes/index');
 
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://127.0.0.1:27017/Leonardo-Questions', 
+mongoose.connect('mongodb+srv://Admin:123@rasbet.bivs6.mongodb.net/RASBet?retryWrites=true&w=majority', 
       { useNewUrlParser: true,
         useUnifiedTopology: true,
         serverSelectionTimeoutMS: 5000});

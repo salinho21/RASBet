@@ -1,11 +1,16 @@
 const mongoose = require('mongoose')
+mongoose.set('useCreateIndex', true);
 
 var userSchema = new mongoose.Schema(
   
     {
         id: String,
-        email: String,
-        password_hash: String,
+        nome: String,
+        email: {
+          unique: true,
+          type: String
+        },
+        password: String,
         type: String,
         balance: String,
         bet_history :[ {

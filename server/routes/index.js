@@ -29,14 +29,14 @@ router.get('/user', (req, res, next) => {
     if (error) return res.status(401).json({
       title: 'Unauthorized'
     })
-
     UserModel.findOne({ _id: decoded.userId }, (error, user) => {
       if (error) return console.log(error)
       return res.status(200).json({
-        title: 'User grabbed',
+        title: 'User Grabbed',
         user:{
+          name: user.name,
           email: user.email,
-          name: user.name
+          password: user.password
         }
       })
     })
@@ -81,8 +81,8 @@ router.post('/event', function(req, res){
 // Registar um user
 router.post('/user', function(req, res){
   const newUser = {
-    email: req.body.email,
     name: req.body.name,
+    email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 10),
     type: 'User'
   }
@@ -110,7 +110,7 @@ router.post('/login', (req,res, next) =>{
         error: 'Invalid Credentials'
       })
     }
-    let token = jwt.sign({userId: UserModel._id}, 'secretkey');
+    let token = jwt.sign({userId: user._id}, 'secretkey');
     return res.status(201).json({
       title: 'Login successful',
       token: token

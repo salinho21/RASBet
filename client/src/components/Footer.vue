@@ -2,14 +2,17 @@
   <v-footer
     dark
     padless
+    bottom
+    fixed
   >
     <v-card
       class="flex"
       flat
       tile
       height="100%"
+      
     >
-      <v-card-title class="indigo darken-4">
+      <v-card-title class="indigo darken-4" height="1">
         <v-btn
         v-for="link in links"
         :key="link"

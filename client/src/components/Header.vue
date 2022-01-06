@@ -1,11 +1,15 @@
 <template>
     <v-app-bar app color="indigo darken-4" height="90" clipped-left>
-        <v-avatar color="indigo" size="75" class="mr-5">
-            <v-img 
-                src="../assets/logotipo.png"
-            ></v-img>
-        </v-avatar>
-        <h1 class="white-text">RASBet</h1>
+        <a href="/betting">
+            <v-avatar color="indigo" size="75" class="ml-5">
+                <v-img src="../assets/logotipo.png"/>     
+            </v-avatar>      
+        </a>
+        <v-btn class="btn" color="white" text id="no-background-hover">
+            <h1 class="white-text">RASBet</h1>
+        </v-btn>
+            
+        
         <div class="spacer"></div>
         
 
@@ -70,7 +74,8 @@
             <span>Registar Utilizador</span>
         </v-tooltip>
 
-        <v-menu v-if="logged">
+        <v-menu v-if="logged" :rounded="rounded"
+      offset-y>
             <template v-slot:activator="{ on: menu }">
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on: tooltip }">
@@ -89,12 +94,28 @@
                 </v-tooltip>
             </template>
             <v-list>
-                <v-list-item link :to="asd">
-                    <v-list-item-title>Página para mudar</v-list-item-title>
+                 <v-list-item class="mb-3" link :to="asd">                 
+                        <v-avatar class="mr-3">
+                                <v-img src="../assets/defaultuser.jpg"/>
+                        </v-avatar>   
+                        <h4>João Amorim</h4> 
+    
                 </v-list-item>
-                <!-- Se se quiser fazer logout -->
+                <v-list-item link :to="asd">                 
+                        <v-icon class="mr-2">mdi-view-list-outline</v-icon>   
+                         <v-list-item-title @click="historico">Histórico de Apostas</v-list-item-title>              
+                </v-list-item>
+                 <v-list-item link :to="asd">                 
+                        <v-icon class="mr-2">mdi-cash-multiple</v-icon>   
+                         <v-list-item-title @click="movimentos">Movimentos de Conta</v-list-item-title>              
+                </v-list-item>
+                <v-list-item link :to="asd">                 
+                        <v-icon class="mr-2">mdi-cog</v-icon>   
+                         <v-list-item-title @click="detalhes">Detalhes de Conta</v-list-item-title>              
+                </v-list-item>
                 <v-list-item @click="logout" text>
-
+                    <v-icon>mdi-logout</v-icon>
+                    <v-list-item-title>Logout</v-list-item-title>
                 </v-list-item>
             </v-list>
         </v-menu>
@@ -111,9 +132,19 @@ export default {
             logged: true
         }
     },
-    methods:{
-        logout: function(){
-            //Função de logout
+    methods:{  
+        historico(){
+            this.$router.push('/historico')
+        },
+        movimentos(){
+            this.$router.push('/movimentos')
+        },
+        detalhes(){
+            this.$router.push('/detalhes')
+        },
+        logout(){
+            localStorage.clear()
+            this.$router.push('/authentication')
         }
     }
 };
@@ -135,5 +166,11 @@ h1{
   border-radius: 50%; 
   min-height: 500px;
   min-width: 500px;
+}
+.btn {
+    text-transform: none;
+}
+#no-background-hover::before {
+   background-color: transparent 
 }
 </style>

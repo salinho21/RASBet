@@ -1,26 +1,52 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Auth from '../views/Auth.vue'
-import Homepage from '../views/Homepage.vue'
+import Admin from '../views/Admin.vue'
+import AccountDetails from '../views/AccountDetails.vue'
+import Authentication from '../views/Authentication.vue'
+import BettingPage from '../views/BettingPage.vue'
+import Historico from '../views/Historico.vue'
+import Movements from '../views/Movements.vue'
+
 
 Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/admin',
+    name: 'Admin',
+    component: Admin
+  },
+  {
     path: '/',
-    name: 'Auth',
-    component: Auth
+    name: 'Authentication',
+    component: Authentication
   },
   {
-    path: '/auth',
-    name: 'Auth',
-    component: Auth
+    path: '/authentication',
+    name: 'Authentication',
+    component: Authentication
   },
   {
-    path: '/homepage',
-    name: 'Homepage',
-    component: Homepage
+    path: '/betting',
+    name: 'BettingPage',
+    component: BettingPage
+  },
+  {
+    path: '/detalhes',
+    name: 'AccountDetails',
+    component: AccountDetails
+  },
+  {
+    path: '/historico',
+    name: 'Historico',
+    component: Historico
+  },
+  {
+    path: '/movimentos',
+    name: 'Movements',
+    component: Movements
   }
+  
 ]
 
 const router = new VueRouter({

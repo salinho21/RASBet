@@ -8,20 +8,6 @@ const User = require('../controllers/userController')
 const UserModel = require('../models/user')
 const jwt = require('jsonwebtoken')
 
-// Listar todas as bets
-router.get('/bet', function(req, res) {
-  Bet.listar()
-    .then(dados => res.status(200).jsonp(dados) )
-    .catch(e => res.status(500).jsonp({error: e}))
-});
-
-// Listar todos os eventos
-router.get('/event', function(req, res) {
-  Event.listar()
-    .then(dados => res.status(200).jsonp(dados) )
-    .catch(e => res.status(500).jsonp({error: e}))
-});
-
 // Listar todos os utilizadores
 router.get('/user', (req, res, next) => {
   let token = req.headers.token;
@@ -34,49 +20,14 @@ router.get('/user', (req, res, next) => {
       return res.status(200).json({
         title: 'User Grabbed',
         user:{
+          _id: user._id,
           name: user.name,
-          email: user.email,
-          password: user.password
+          email: user.email
         }
       })
     })
   })
 });
-
-// Consultar uma bet por id
-router.get('/bet/:id', function(req, res) {
-  Bet.consultar(req.params.id)
-    .then(dados => res.status(200).jsonp(dados))
-    .catch(e => res.status(500).jsonp({error: e}))
-});
-
-// Consultar um evento por id
-router.get('/event/:id', function(req, res) {
-  Event.consultar(req.params.id)
-    .then(dados => res.status(200).jsonp(dados))
-    .catch(e => res.status(500).jsonp({error: e}))
-});
-
-// Consultar um user por id
-router.get('/user/:id', function(req, res) {
-  User.consultar(req.params.id)
-    .then(dados => res.status(200).jsonp(dados))
-    .catch(e => res.status(500).jsonp({error: e}))
-});
-
-// Inserir uma bet
-router.post('/bet', function(req, res){
-  Bet.inserir(req.body)
-    .then(dados => res.status(201).jsonp({dados: dados}))
-    .catch(e => res.status(500).jsonp({error: e}))
-})
-
-// Inserir um event
-router.post('/event', function(req, res){
-  Event.inserir(req.body)
-    .then(dados => res.status(201).jsonp({dados: dados}))
-    .catch(e => res.status(500).jsonp({error: e}))
-})
 
 // Registar um user
 router.post('/user', function(req, res){
@@ -118,46 +69,32 @@ router.post('/login', (req,res, next) =>{
   })
 })
 
-// Editar uma bet
-router.put('/bet', function(req, res){
-  Bet.alterar(req.body)
-    .then(dados => res.status(201).jsonp({dados: dados}))
-    .catch(e => res.status(500).jsonp({error: e}))
-})
-
-// Editar um event
-router.put('/event', function(req, res){
-  Event.alterar(req.body)
-    .then(dados => res.status(201).jsonp({dados: dados}))
-    .catch(e => res.status(500).jsonp({error: e}))
-})
+// Editar um user
 
 // Editar um user
 router.put('/user', function(req, res){
-  User.alterar(req.body)
-    .then(dados => res.status(201).jsonp({dados: dados}))
-    .catch(e => res.status(500).jsonp({error: e}))
+  UserModel.findOne({ _id: req.body._id }, (err, user) =>{
+    if(req.body.password!=null){
+      if(bcrypt.compareSync(req.body.oldPassword, user.password)){
+        const editUser={
+          _id: req.body._id,
+          password: bcrypt.hashSync(req.body.password, 10)
+        }
+        console.log(editUser)
+        User.alterar(editUser)
+        .then(dados => res.status(201).jsonp({dados: dados}))
+        .catch(e => res.status(500).jsonp({error: e}))
+      }
+    }else{
+      User.alterar(req.body)
+        .then(dados => res.status(201).jsonp({dados: dados}))
+        .catch(e => res.status(500).jsonp({error: e}))
+    }
+    
+  })
+  
+  /**/
 })
 
-// Remover uma bet
-router.delete('/bet/:id', function(req, res) {
-  Bet.remover(req.params.id)
-    .then(dados => res.status(200).jsonp(dados))
-    .catch(e => res.status(500).jsonp({error: e}))
-});
-
-// Remover um dominio
-router.delete('/event/:id', function(req, res) {
-  Event.remover(req.params.id)
-    .then(dados => res.status(200).jsonp(dados))
-    .catch(e => res.status(500).jsonp({error: e}))
-});
-
-// Remover um dominio
-router.delete('/user/:id', function(req, res) {
-  User.remover(req.params.id)
-    .then(dados => res.status(200).jsonp(dados))
-    .catch(e => res.status(500).jsonp({error: e}))
-});
 
 module.exports = router;

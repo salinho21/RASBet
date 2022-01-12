@@ -215,7 +215,7 @@ export default {
         changePassword(){
            if(this.$refs.form2.validate()){
                 console.log('Campos Válidos')
-                console.log(this.passwordData.email)
+                console.log(this.passwordData._id)
                 console.log(this.passwordData.password)
                 console.log(this.passwordData.oldPassword)
                 axios.put(`http://localhost:8001/user`, this.passwordData)

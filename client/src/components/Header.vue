@@ -152,10 +152,10 @@ export default {
             logged: true,
             tempos: ['EUR','USD','GBP','ADA'],
             balance:{
-                eur: '',
-                usd: '',
-                gbp: '',
-                ada: ''
+                EUR: '',
+                USD: '',
+                GBP: '',
+                ADA: ''
             },
             coinType: '',
             finalBalance: ''
@@ -167,28 +167,19 @@ export default {
         }  
         axios.get('http://localhost:8001/user', {headers: {token: localStorage.getItem('token')}})
             .then(res => {
-                console.log(res)
                 this.coinType = res.data.user.currentCoin
-                console.log(res.data.user.balance.eur)
-                this.balance.eur = res.data.user.balance.eur
-                this.balance.usd = res.data.user.balance.usd
-                this.balance.gbp = res.data.user.balance.gbp
-                this.balance.ada = res.data.user.balance.ada
-                if(this.coinType==='eur'){
-                    console.log(this.balance.eur)
-                    this.finalBalance=this.balance.eur
+                if(this.coinType==='EUR'){
+                    this.finalBalance=res.data.user.balance.EUR
                 }
-                if(this.coinType==='usd'){
-                    this.finalBalance=this.balance.usd
+                if(this.coinType==='USD'){
+                    this.finalBalance=res.data.user.balance.USD
                 }
-                if(this.coinType==='gbp'){
-                    this.finalBalance=this.balance.gbp
+                if(this.coinType==='GBP'){
+                    this.finalBalance=res.data.user.balance.GBP
                 }
-                if(this.coinType==='ada'){
-                    this.finalBalance=this.balance.ada
+                if(this.coinType==='ADA'){
+                    this.finalBalance=res.data.user.balance.ADA
                 }
-                console.log(this.coinType)
-                console.log(this.finalBalance)
         })      
     },
     methods:{  

@@ -39,12 +39,12 @@ router.post('/user', function(req, res){
     password: bcrypt.hashSync(req.body.password, 10),
     type: 'User',
     balance: {
-      eur: '0.00',
-      usd: '0.00',
-      gbp: '0.00',
-      ada: '0.00'
+      EUR: '0.00',
+      USD: '0.00',
+      GBP: '0.00',
+      ADA: '0.00'
     },
-    currentCoin: 'eur'
+    currentCoin: 'EUR'
   }
   User.inserir(newUser)
     .then(dados => res.status(201).jsonp({dados: dados}))

@@ -13,10 +13,10 @@ var userSchema = new mongoose.Schema(
         password: String,
         type: String,
         balance: {
-          eur: String,
-          usd: String,
-          gbp: String,
-          ada: String
+          EUR: String,
+          USD: String,
+          GBP: String,
+          ADA: String
         },
         currentCoin: String,
         bet_history :[ {

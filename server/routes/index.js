@@ -22,7 +22,9 @@ router.get('/user', (req, res, next) => {
         user:{
           _id: user._id,
           name: user.name,
-          email: user.email
+          email: user.email,
+          balance: user.balance,
+          currentCoin: user.currentCoin
         }
       })
     })
@@ -35,7 +37,14 @@ router.post('/user', function(req, res){
     name: req.body.name,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 10),
-    type: 'User'
+    type: 'User',
+    balance: {
+      eur: '0.00',
+      usd: '0.00',
+      gbp: '0.00',
+      ada: '0.00'
+    },
+    currentCoin: 'eur'
   }
   User.inserir(newUser)
     .then(dados => res.status(201).jsonp({dados: dados}))

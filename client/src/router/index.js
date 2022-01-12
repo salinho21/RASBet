@@ -6,6 +6,7 @@ import Authentication from '../views/Authentication.vue'
 import BettingPage from '../views/BettingPage.vue'
 import Historico from '../views/Historico.vue'
 import Movements from '../views/Movements.vue'
+import Saldo from '../views/Saldo.vue'
 
 
 Vue.use(VueRouter)
@@ -45,6 +46,11 @@ const routes = [
     path: '/movimentos',
     name: 'Movements',
     component: Movements
+  },
+  {
+    path: '/saldo',
+    name: 'Saldo',
+    component: Saldo
   }
   
 ]

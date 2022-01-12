@@ -2,8 +2,7 @@
   <v-footer
     dark
     padless
-    bottom
-    fixed
+    bottom class="mt-16"
   >
     <v-card
       class="flex"

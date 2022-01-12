@@ -12,7 +12,13 @@ var userSchema = new mongoose.Schema(
         },
         password: String,
         type: String,
-        balance: String,
+        balance: {
+          eur: String,
+          usd: String,
+          gbp: String,
+          ada: String
+        },
+        currentCoin: String,
         bet_history :[ {
           betID: String
         }],

@@ -22,17 +22,33 @@
         ></v-text-field>
        <div class="spacer"></div>
 
-       <v-tooltip v-if="logged" bottom>
-            <template v-slot:activator="{ on, attrs }"> 
-                    <v-btn v-bind="attrs" v-on="on" color="white" text rounded>
-                        <v-icon size="28px" class="mr-1">
-                            mdi-plus-circle
-                        </v-icon>
-                         0.00€ 
-                    </v-btn>                   
-            </template>
-            <span>Apostas</span>
-        </v-tooltip>
+       
+
+        
+        <v-btn-toggle v-model="alignment"
+        dense class="mr-5 mb-3 mt-3">
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">    
+                    <v-btn v-bind="attrs" v-on="on" to="/saldo" color="indigo darken-4" dense>
+                        <v-icon color="white">mdi-plus</v-icon>
+                    </v-btn>                    
+                </template>
+                <span>Adicionar Saldo</span>
+            </v-tooltip>
+
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">    
+                    <v-btn v-bind="attrs" v-on="on" color="white" >
+                        {{finalBalance}}
+                    </v-btn>                    
+                </template>
+                <span>Sair</span>
+            </v-tooltip>
+        </v-btn-toggle>
+
+       
+
+       
 
         <v-tooltip v-if="logged" bottom>
             <template v-slot:activator="{ on, attrs }">    
@@ -110,6 +126,10 @@
                          <v-list-item-title @click="movimentos">Movimentos de Conta</v-list-item-title>              
                 </v-list-item>
                 <v-list-item link :to="asd">                 
+                        <v-icon class="mr-2">mdi-currency-usd</v-icon>   
+                         <v-list-item-title @click="saldo">Gerir Saldo</v-list-item-title>              
+                </v-list-item>
+                <v-list-item link :to="asd">                 
                         <v-icon class="mr-2">mdi-cog</v-icon>   
                          <v-list-item-title @click="detalhes">Detalhes de Conta</v-list-item-title>              
                 </v-list-item>
@@ -125,12 +145,51 @@
 </template>
 
 <script>
-
+import axios from 'axios';
 export default {
     data() {
         return{
-            logged: true
+            logged: true,
+            tempos: ['EUR','USD','GBP','ADA'],
+            balance:{
+                eur: '',
+                usd: '',
+                gbp: '',
+                ada: ''
+            },
+            coinType: '',
+            finalBalance: ''
         }
+    },
+    created(){
+        if(localStorage.getItem('token') === null){
+            this.$router.push('/authentication')
+        }  
+        axios.get('http://localhost:8001/user', {headers: {token: localStorage.getItem('token')}})
+            .then(res => {
+                console.log(res)
+                this.coinType = res.data.user.currentCoin
+                console.log(res.data.user.balance.eur)
+                this.balance.eur = res.data.user.balance.eur
+                this.balance.usd = res.data.user.balance.usd
+                this.balance.gbp = res.data.user.balance.gbp
+                this.balance.ada = res.data.user.balance.ada
+                if(this.coinType==='eur'){
+                    console.log(this.balance.eur)
+                    this.finalBalance=this.balance.eur
+                }
+                if(this.coinType==='usd'){
+                    this.finalBalance=this.balance.usd
+                }
+                if(this.coinType==='gbp'){
+                    this.finalBalance=this.balance.gbp
+                }
+                if(this.coinType==='ada'){
+                    this.finalBalance=this.balance.ada
+                }
+                console.log(this.coinType)
+                console.log(this.finalBalance)
+        })      
     },
     methods:{  
         historico(){
@@ -138,6 +197,9 @@ export default {
         },
         movimentos(){
             this.$router.push('/movimentos')
+        },
+        saldo(){
+            this.$router.push('/saldo')
         },
         detalhes(){
             this.$router.push('/detalhes')
@@ -173,4 +235,9 @@ h1{
 #no-background-hover::before {
    background-color: transparent 
 }
+
+.min-button::before {
+  display: none;
+}
+
 </style>

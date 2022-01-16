@@ -32,28 +32,43 @@
                                 </v-row>
                                 
                             </v-col>
-                            <v-col cols="6" class="mt-13">
+                            <v-col cols="6" class="mt-10">
                                 <v-row>
                                     <v-col cols="10">
+                                        <h4 class="mb-3">Nome:</h4>
                                         <v-text-field v-model="formData.name" filled placeholder="Nome" :readonly="notEditing" :rules="rules.required"/>
                                     </v-col>
                                 </v-row>
                                 <v-row>
+                                   
                                     <v-col cols="10">
+                                         <h4 class="mb-3">Email:</h4>
                                         <v-text-field v-model="formData.email" filled placeholder="Email" :readonly="notEditing" :rules="rules.email"/>
                                     </v-col>
                                 </v-row>
                                 <v-row justify="end">
                                     <v-col cols="5">
-                                        <v-btn class="" rounded @click="passwordBtn">
-                                            <h4>Alterar Password</h4> 
-                                        </v-btn>
+                                         <v-tooltip bottom>
+                                            <template v-slot:activator="{ on, attrs }">   
+                                                <v-btn v-bind="attrs" v-on="on" color="#29E898" @click="passwordBtn" elevation="5" rounded class="mr-3">
+                                                    <h4>Alterar Password</h4>  
+                                                </v-btn>                     
+                                            </template>
+                                            <span>Alterar Password</span>
+                                        </v-tooltip>
+
                                     </v-col>
                                     <v-col cols="7">
-                                        <v-btn class="ml-5 pr-10 pl-10" rounded @click="editBtn">
-                                            <h4 v-if="notEditing">Editar Perfil</h4>
-                                            <h4 v-else>Confirmar Edição</h4>
-                                        </v-btn>
+
+                                        <v-tooltip bottom>
+                                            <template v-slot:activator="{ on, attrs }">   
+                                            <v-btn v-bind="attrs" v-on="on" color="#F0B62B" @click="editBtn" elevation="5" rounded class="ml-5 pr-10 pl-10">
+                                                <h4 v-if="notEditing">Editar Perfil</h4>
+                                                <h4 v-else>Confirmar Edição</h4>
+                                            </v-btn>                     
+                                            </template>
+                                            <span>Sair</span>
+                                        </v-tooltip>
                                      </v-col>
                                 </v-row>
                             </v-col>
@@ -80,7 +95,7 @@
                                     <v-row>
                                         <v-col cols="9">
                                             <h4 class="ml-10 mt-7">Nova Password:</h4>
-                                            <v-text-field v-model="passwordData.password" class="ml-10 mt-3" filled :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'" :rules="[rules.required, rules.min]"
+                                            <v-text-field v-model="passwordData.password" class="ml-10 mt-3" filled :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'" :rules="[rules.required, rules.min, equalPasswords]"
                                                 :type="show3 ? 'text' : 'password'" hint="At least 8 characters" counter @click:append="show3 = !show3"/>
                                         </v-col>
                                     </v-row>
@@ -119,6 +134,82 @@
                             </v-container>
                         </v-card>
                     </v-dialog>
+                    <!-- Janela de Mudança de Password Bem-Sucedida -->
+                    <v-dialog v-model="openConfirmSubmit" max-width="500px">
+                        <v-card>
+                            <v-app-bar color="indigo darken-4" >
+                            <div class="d-flex align-center">
+                                <h3 width="40" class="white--text"> Mudança de Password</h3>
+                            </div>
+                            </v-app-bar>
+                            <v-container>
+                                <v-row>
+                                    <v-col cols="3">
+                                    <v-card class="ml-4 mt-1" color="white" flat height="100px" width="110px" >
+                                        <v-img src="@/assets/check.png"/>
+                                    </v-card>
+                                    </v-col>
+                                    <v-col cols="9">
+                                    <h3 class="ml-5 mt-5">Mudança de Password efetuada com Sucesso!</h3>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                            <v-card-actions>
+                                <v-container>
+                                    <v-row >
+                                        <v-col class="text-right">
+                                        <v-tooltip bottom>
+                                            <template v-slot:activator="{ on, attrs }">   
+                                            <v-btn v-bind="attrs" v-on="on" color="#29E898" @click="closeConfirmSubmit" elevation="5" class="mt-5">
+                                                <v-icon color="white">mdi-door-open</v-icon>
+                                            </v-btn>                     
+                                            </template>
+                                            <span>Sair</span>
+                                        </v-tooltip>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog> 
+                    <!-- Janela de Mudança de Detalhes Bem-Sucedida -->
+                    <v-dialog v-model="openConfirmSubmitv2" max-width="500px">
+                        <v-card>
+                            <v-app-bar color="indigo darken-4" >
+                            <div class="d-flex align-center">
+                                <h3 width="40" class="white--text"> Mudança de Detalhes do Perfil</h3>
+                            </div>
+                            </v-app-bar>
+                            <v-container>
+                                <v-row>
+                                    <v-col cols="3">
+                                    <v-card class="ml-4 mt-1" color="white" flat height="100px" width="110px" >
+                                        <v-img src="@/assets/check.png"/>
+                                    </v-card>
+                                    </v-col>
+                                    <v-col cols="9">
+                                    <h3 class="ml-5 mt-5">Mudança de Detalhes de Perfil efetuada com Sucesso!</h3>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                            <v-card-actions>
+                                <v-container>
+                                    <v-row >
+                                        <v-col class="text-right">
+                                        <v-tooltip bottom>
+                                            <template v-slot:activator="{ on, attrs }">   
+                                            <v-btn v-bind="attrs" v-on="on" color="#29E898" @click="closeConfirmSubmitv2" elevation="5" class="mt-5">
+                                                <v-icon color="white">mdi-door-open</v-icon>
+                                            </v-btn>                     
+                                            </template>
+                                            <span>Sair</span>
+                                        </v-tooltip>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog> 
                 </v-flex>
             </v-layout>
             </v-container>
@@ -148,6 +239,8 @@ export default {
             show4: true,
             show5: false,
             show6: true,
+            openConfirmSubmit: false,
+            openConfirmSubmitv2: false,
             id: '',
             password: '',
             newPassword: '',
@@ -196,6 +289,7 @@ export default {
                     },(error) =>{
                         console.log(error);
                 }); 
+                this.openConfirmSubmitv2 = true
             }
         },
 
@@ -212,23 +306,39 @@ export default {
                 return 'Password does not match.';
             }
         },
+        equalPasswords(){
+            if (this.passwordData.oldPassword === this.passwordData.password) {
+                return 'New password must be different from the old one.'
+            } else {
+                return true
+            }
+        },
         changePassword(){
            if(this.$refs.form2.validate()){
-                console.log('Campos Válidos')
-                console.log(this.passwordData._id)
-                console.log(this.passwordData.password)
-                console.log(this.passwordData.oldPassword)
+
                 axios.put(`http://localhost:8001/user`, this.passwordData)
                     .then(function(response){
                         console.log(response)
+                        
                     },(error) =>{
                         console.log(error);
                 });
+                this.openPassword = false
+                this.openConfirmSubmit = true
+                
            }else{
                this.showError = true
                console.log('Campos Inválidos!')
            }
         },
+
+        closeConfirmSubmit(){
+            this.openConfirmSubmit = false
+        },
+
+        closeConfirmSubmitv2(){
+            this.openConfirmSubmitv2 = false
+        }
        
     }
 }

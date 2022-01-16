@@ -2,7 +2,7 @@
   <v-footer
     dark
     padless
-    bottom class="mt-16"
+    class="mt-16"
   >
     <v-card
       class="flex"
@@ -62,3 +62,4 @@
     }),
   }
 </script>
+

@@ -6,9 +6,10 @@ const Bet = require('../controllers/betController')
 const Event = require('../controllers/eventController')
 const User = require('../controllers/userController')
 const UserModel = require('../models/user')
+const BetModel = require('../models/bet')
 const jwt = require('jsonwebtoken')
 
-// Listar todos os utilizadores
+// GET em Utilizador
 router.get('/user', (req, res, next) => {
   let token = req.headers.token;
   jwt.verify(token, 'secretkey', (error, decoded) =>{
@@ -24,7 +25,8 @@ router.get('/user', (req, res, next) => {
           name: user.name,
           email: user.email,
           balance: user.balance,
-          currentCoin: user.currentCoin
+          currentCoin: user.currentCoin,
+          balance_history: user.balance_history
         }
       })
     })
@@ -44,7 +46,8 @@ router.post('/user', function(req, res){
       GBP: '0.00',
       ADA: '0.00'
     },
-    currentCoin: 'EUR'
+    currentCoin: 'EUR',
+    balance_history: []
   }
   User.inserir(newUser)
     .then(dados => res.status(201).jsonp({dados: dados}))
@@ -84,7 +87,9 @@ router.post('/login', (req,res, next) =>{
 router.put('/user', function(req, res){
   UserModel.findOne({ _id: req.body._id }, (err, user) =>{
     if(req.body.password!=null){
+      console.log('A mudar password')
       if(bcrypt.compareSync(req.body.oldPassword, user.password)){
+        console.log('Password igual à antiga')
         const editUser={
           _id: req.body._id,
           password: bcrypt.hashSync(req.body.password, 10)
@@ -95,6 +100,7 @@ router.put('/user', function(req, res){
         .catch(e => res.status(500).jsonp({error: e}))
       }
     }else{
+      console.log(req.body)
       User.alterar(req.body)
         .then(dados => res.status(201).jsonp({dados: dados}))
         .catch(e => res.status(500).jsonp({error: e}))
@@ -104,6 +110,49 @@ router.put('/user', function(req, res){
   
   /**/
 })
+
+router.post('/evento', function(req, res){
+  const newEvento = {
+    sport: req.body.sport,
+    team1: req.body.team1,
+    team2: req.body.team2,
+    type: 'Full time',
+    result_odd: {
+      home: req.body.home,
+      tie: req.body.tie,
+      away: req.body.away
+    },
+    state: req.body.state
+  }
+  Event.inserir(newEvento)
+    .then(dados => res.status(201).jsonp({dados: dados}))
+    .catch(e => res.status(500).jsonp({error: 'erro'}))
+})
+
+// GET em Bet
+router.get('/bet', (req, res, next) => {
+  let token = req.headers.token;
+  jwt.verify(token, 'secretkey', (error, decoded) =>{
+    if (error) return res.status(401).json({
+      title: 'Unauthorized'
+    })
+    BetModel.findOne({ user_id: decoded.userId }, (error, bet) => {
+      if (error) return console.log(error)
+      return res.status(200).json({
+        title: 'User Grabbed',
+        bet:{
+          _id: bet._id,
+          events: bet.events,
+          total_odd: bet.total_odd,
+          bet_amount: bet.bet_amount,
+          state: bet.state,
+          date: bet.date,
+          user_id: bet.user_id
+        }
+      })
+    })
+  })
+});
 
 
 module.exports = router;

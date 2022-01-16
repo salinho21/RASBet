@@ -5,7 +5,7 @@
                 <v-img src="../assets/logotipo.png"/>     
             </v-avatar>      
         </a>
-        <v-btn class="btn" color="white" text id="no-background-hover">
+        <v-btn class="btn" color="white" to="/betting" text id="no-background-hover">
             <h1 class="white-text">RASBet</h1>
         </v-btn>
             
@@ -46,13 +46,9 @@
             </v-tooltip>
         </v-btn-toggle>
 
-       
-
-       
-
         <v-tooltip v-if="logged" bottom>
             <template v-slot:activator="{ on, attrs }">    
-                <v-btn v-bind="attrs" v-on="on" color="white" text rounded>
+                <v-btn v-bind="attrs" v-on="on" color="white" to="/historico" text rounded>
                     <v-icon size="28px">
                         mdi-view-list-outline
                     </v-icon>
@@ -117,6 +113,10 @@
                         <h4>João Amorim</h4> 
     
                 </v-list-item>
+                <v-list-item v-if="this.user_type==='admin'" link :to="admin">                 
+                        <v-icon class="mr-2">mdi-plus</v-icon>   
+                         <v-list-item-title> Inserir Evento</v-list-item-title>              
+                </v-list-item>
                 <v-list-item link :to="asd">                 
                         <v-icon class="mr-2">mdi-view-list-outline</v-icon>   
                          <v-list-item-title @click="historico">Histórico de Apostas</v-list-item-title>              
@@ -158,7 +158,8 @@ export default {
                 ADA: ''
             },
             coinType: '',
-            finalBalance: ''
+            finalBalance: '',
+            user_type: ''
         }
     },
     created(){
@@ -169,17 +170,18 @@ export default {
             .then(res => {
                 this.coinType = res.data.user.currentCoin
                 if(this.coinType==='EUR'){
-                    this.finalBalance=res.data.user.balance.EUR
+                    this.finalBalance=res.data.user.balance.EUR + ' EUR'
                 }
                 if(this.coinType==='USD'){
-                    this.finalBalance=res.data.user.balance.USD
+                    this.finalBalance=res.data.user.balance.USD + ' USD'
                 }
                 if(this.coinType==='GBP'){
-                    this.finalBalance=res.data.user.balance.GBP
+                    this.finalBalance=res.data.user.balance.GBP + ' GBP'
                 }
                 if(this.coinType==='ADA'){
-                    this.finalBalance=res.data.user.balance.ADA
+                    this.finalBalance=res.data.user.balance.ADA + ' ADA'
                 }
+                this.user_type= res.data.user.type
         })      
     },
     methods:{  

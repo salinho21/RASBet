@@ -19,13 +19,17 @@ var userSchema = new mongoose.Schema(
           ADA: String
         },
         currentCoin: String,
-        bet_history :[ {
-          betID: String
-        }],
         balance_history: [{
-          date: String,
-          value: String
+          tipo: String,
+          amountInicial: String,
+          amountFinal: String,
+          data: String,
+          saldo_final: String
+        }],
+        bet_history :[{
+          betID: String
         }]
+        
   });
 
 module.exports = mongoose.model('user', userSchema)

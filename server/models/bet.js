@@ -5,8 +5,12 @@ var betSchema = new mongoose.Schema(
     {
         id: String,
         user_id: String,
+        type: String,
         events: [{
             eventID: String,
+            evento: String,
+            estado: String,
+            value: String,
             odd: String
         }],
         total_odd: String,

@@ -36,6 +36,8 @@
                                     <p class="mt-5" v-if="item.tipo=='Conversão'">Valor a Converter: {{item.amountInicial}} <v-spacer class="mt-1"/> Valor Obtido: {{item.amountFinal}} <v-spacer class="mt-1"/> Saldos Após Conversão: {{item.saldo_final}}</p>
                                 </td>
                                 </template>
+                                
+
                             </v-data-table>
                     </v-card>
                 </v-flex>
@@ -81,12 +83,10 @@ export default {
         }  
         axios.get('http://localhost:8001/user', {headers: {token: localStorage.getItem('token')}})
             .then(res => {
-                
                 this.movimentos = res.data.user.balance_history,
                 this.movimentos.forEach((obj)=>{
                     obj._id = '#' + obj._id
                 })
-                console.log(this.movimentos)
         })      
     },
 

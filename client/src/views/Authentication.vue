@@ -32,7 +32,7 @@
                           />
 
                           <v-text-field
-                             v-model="password"
+                            v-model="password"
                             label="Password"
                             prepend-icon="lock"
                             type="password"

@@ -28,13 +28,21 @@
                                 hide-details
                             ></v-text-field>
                             </v-card-title>
-                            <v-data-table :headers="headers" :items="movimentos" :search="search" :single-expand="singleExpand" :expanded.sync="expanded" item-key="_id" show-expand class="elevation-1 mt-5">
+                            <v-data-table :headers="headers" :items="bets" :search="search" :single-expand="singleExpand" :expanded.sync="expanded" item-key="_id" show-expand class="elevation-1 mt-5">
                                 <template v-slot:expanded-item="{ headers, item }">
-                                <td :colspan="headers.length">
-                                    <p class="mt-5" v-if="item.tipo=='Levantamento'">Valor de Levantamento: {{item.amountInicial}} <v-spacer class="mt-1"/> Saldo Final: {{item.saldo_final}}</p>
-                                    <p class="mt-5" v-if="item.tipo=='Depósito'">Valor de Depósito: {{item.amountInicial}} <v-spacer class="mt-1"/> Saldo Final: {{item.saldo_final}}</p>
-                                    <p class="mt-5" v-if="item.tipo=='Conversão'">Valor a Converter: {{item.amountInicial}} <v-spacer class="mt-1"/> Valor Obtido: {{item.amountFinal}} <v-spacer class="mt-1"/> Saldos Após Conversão: {{item.saldo_final}}</p>
-                                </td>
+                                    <tr :colspan="headers.length" v-for="(i,index) in bets" :key="i.sport">
+                                        <p class="mt-5 ml-5">
+                                            <b>Desporto:</b> {{item.events[index].sport}} 
+                                            <v-spacer class="ml-2"/> 
+                                            <b>Evento: </b> {{item.events[index].evento}}
+                                            <v-spacer class="ml-2"/> 
+                                            <b>Aposta Em: </b> {{item.events[index].aposta}}
+                                            <v-spacer class="ml-2"/> 
+                                            <b>Estado: </b> {{item.events[index].estado}}
+                                            <v-spacer class="ml-2"/> 
+                                            <b>Odd:</b> {{item.events[index].odd}}
+                                        </p>                               
+                                    </tr>
                                 </template>
                             </v-data-table>
                     </v-card>
@@ -62,16 +70,19 @@ export default {
             singleExpand: false,
             headers: [
                 {
-                    text: 'ID de Movimento',
+                    text: 'Tipo de Aposta',
                     align: 'start',
                     filterable: false,
-                    value: '_id'
+                    value: 'type'
                 },
-                { text: 'Tipo de Movimento', value: 'tipo' },
-                { text: 'Data', value: 'data' },
+                { text: 'Estado', value: 'state' },
+                { text: 'Odd', value: 'total_odd' },
+                { text: 'Valor', value: 'bet_amount' },
+                { text: 'Ganhos', value: 'ganhos' },
+                { text: 'Data', value: 'date' },
                 { text: '', value: 'data-table-expand' }
             ],
-            bets: [],
+            bets: []
         }
     },
 
@@ -81,12 +92,7 @@ export default {
         }  
         axios.get('http://localhost:8001/bet', {headers: {token: localStorage.getItem('token')}})
             .then(res => {
-                console.log(res)
-                /*this.movimentos = res.data.user.balance_history,
-                this.movimentos.forEach((obj)=>{
-                    obj._id = '#' + obj._id
-                })
-                console.log(this.movimentos)*/
+                this.bets = res.data.bets
         })      
     },
 

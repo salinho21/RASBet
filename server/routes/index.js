@@ -129,6 +129,15 @@ router.post('/evento', function(req, res){
     .catch(e => res.status(500).jsonp({error: 'erro'}))
 })
 
+
+
+// Listar todas os dominios
+router.get('/events', function(req, res) {
+  Event.listar()
+    .then(dados => res.status(200).jsonp(dados) )
+    .catch(e => res.status(500).jsonp({error: e}))
+});
+
 // GET em Bet
 router.get('/bet', (req, res, next) => {
   let token = req.headers.token;
@@ -136,19 +145,11 @@ router.get('/bet', (req, res, next) => {
     if (error) return res.status(401).json({
       title: 'Unauthorized'
     })
-    BetModel.findOne({ user_id: decoded.userId }, (error, bet) => {
+    BetModel.find({ user_id: decoded.userId }, (error, bet) => {
       if (error) return console.log(error)
       return res.status(200).json({
-        title: 'User Grabbed',
-        bet:{
-          _id: bet._id,
-          events: bet.events,
-          total_odd: bet.total_odd,
-          bet_amount: bet.bet_amount,
-          state: bet.state,
-          date: bet.date,
-          user_id: bet.user_id
-        }
+        title: 'Bets Grabbed',
+        bets: bet
       })
     })
   })

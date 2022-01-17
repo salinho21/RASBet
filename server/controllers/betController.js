@@ -2,7 +2,7 @@
 
 var Bet = require('../models/bet')
 
-// Devolve a lista de Dominios
+// Devolve a lista de bets
 module.exports.listar = () => {
     return Bet
         .find()

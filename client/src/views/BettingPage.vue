@@ -10,9 +10,9 @@
                 >
                     
                  <v-navigation-drawer permanent width="100%">
-                    <v-list-item>
+                    <v-list-item class="title">
                         <v-list-item-content>
-                        <v-list-item-title class="text-h6">
+                        <v-list-item-title class="text-h6 title white--text">
                             Desportos
                         </v-list-item-title>
                         </v-list-item-content>
@@ -342,13 +342,22 @@ export default {
                 {nome: 'Andebol', icon: 'mdi-handball'},
                 {nome: 'Ténis', icon: 'mdi-tennis-ball'},
                 {nome: 'Voleibol', icon: 'mdi-volleyball'}
-            ]
+            ],
+            events: []
         }
     },
     created(){
         if(localStorage.getItem('token')===null){
             this.$router.push('/authentication')
         }
+        axios.get(`http://localhost:8001/events`)
+            .then((response)=>{
+                response.data.forEach((obj) =>{
+                this.events.push(obj)
+                });
+            },(error) =>{
+                console.log(error);
+        });
     },
     mounted(){
         axios.get('http://localhost:8001/user', {headers: {token: localStorage.get('token')}})
@@ -402,6 +411,11 @@ export default {
 .boletimbtn {
   position: absolute;
   bottom: 0;
+}
+
+.title {
+    background-color: rgb(26, 35, 126)
+
 }
 </style>
 

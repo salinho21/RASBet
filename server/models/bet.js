@@ -8,13 +8,15 @@ var betSchema = new mongoose.Schema(
         type: String,
         events: [{
             eventID: String,
+            sport: String,
             evento: String,
+            aposta: String,
             estado: String,
-            value: String,
             odd: String
         }],
         total_odd: String,
         bet_ammount: String,
+        ganhos: String,
         state: String,
         date: String
   });

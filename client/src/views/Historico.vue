@@ -7,7 +7,7 @@
                     <v-card class="mt-16" color="indigo darken-4" elevation="10">
                         <v-row >
                             <v-col>
-                                <v-card-title class="text-h4 mr-5">
+                                <v-card-title class="white--text text-h4 mr-5">
                                     <v-icon class="mr-3" size="50px" color="white">
                                         mdi-view-list-outline
                                     </v-icon>

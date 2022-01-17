@@ -26,7 +26,8 @@ router.get('/user', (req, res, next) => {
           email: user.email,
           balance: user.balance,
           currentCoin: user.currentCoin,
-          balance_history: user.balance_history
+          balance_history: user.balance_history,
+          user_type: user.user_type
         }
       })
     })

@@ -19,7 +19,7 @@
                                 <v-icon>{{ item.icon }}</v-icon>
                             </v-list-item-icon>
                             <v-list-item-content>
-                                <v-list-item-title><h3>{{ item.nome }}</h3></v-list-item-title>
+                                <v-list-item-title @click="printDesporto(item.nome)"><h3>{{ item.nome }}</h3></v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
                     </v-list>
@@ -94,67 +94,14 @@
                                 <span>Away Team</span>
                             </v-tooltip>
                         </v-col >
-                    </v-row>
-                        
-                        
+                    </v-row>           
                 </v-card>
-
-
-
-                <!--<v-card class="mb-3" width="1000" >
-                    <v-row v-for="item in items" :key="item.message" no-gutters>
-                        <v-col cols="12">
-                            <v-card-title class="white--text cardtitle">
-                            <v-icon class="mr-1" color="white">mdi-soccer</v-icon>
-                            <h6>{{item.message}}</h6> 
-                            </v-card-title>
-                        </v-col>
-                        
-                            <v-row>asda</v-row>
-                            <v-col cols="5">
-                                <h4 class="ml-3 mb-2 mt-7">Real Madrid x Barcelona</h4> 
-                            </v-col>
-                            <v-col cols="7">
-                                Real Madrid
-                                <v-tooltip bottom>
-                                        <template v-slot:activator="{ on, attrs }"> 
-                                            
-                                            <v-btn v-bind="attrs" v-on="on" class="mr-8 mb-5 mt-5 white--text" color="indigo darken-4" dense>
-                                                <h4 color="white--text "> 1.2</h4> 
-                                            </v-btn>                   
-                                        </template>
-                                        <span>Home Team</span>
-                                </v-tooltip>
-                                Empate
-                                <v-tooltip bottom>
-                                    <template v-slot:activator="{ on, attrs }"> 
-                                        
-                                        <v-btn v-bind="attrs" v-on="on" class="mr-8 mb-5 mt-5 white--text" color="indigo darken-4" dense>
-                                            <h3>1.82</h3>
-                                        </v-btn>                   
-                                    </template>
-                                    <span>Draw</span>
-                                </v-tooltip>    
-                                Barcelona
-                                <v-tooltip bottom>
-                                    <template v-slot:activator="{ on, attrs }"> 
-                                       
-                                        <v-btn v-bind="attrs" v-on="on" class="mr-5 mb-5 mt-5 white--text" color="indigo darken-4" dense>
-                                            <h3>3.35</h3>
-                                        </v-btn>                   
-                                    </template>
-                                    <span>Away Team</span>
-                                </v-tooltip>
-                            </v-col>
-                        
-                   
-                    </v-row>
-                </v-card> -->
             </v-col>
 
-            <v-col cols="3">
+            <!-- Boletim-->
+            <v-col cols="3" class="mt-2">
                 <v-row>
-                   <v-card class="ml-14 sticky-card1" width="350" height="80" outlined>
+                   <v-card class="ml-14 sticky-card1" width="350" height="90" outlined>
                         <v-row>
                             <v-col cols="1">
                                 <v-icon class ="ml-2 mt-3" color="indigo darken-4" dense>mdi-playlist-plus</v-icon>
@@ -177,7 +124,7 @@
                             <v-col cols="6" >
                                 <v-tooltip bottom>
                                     <template v-slot:activator="{ on, attrs }">    
-                                        <v-btn v-bind="attrs" v-on="on" rounded small color="grey darken-3" class="white--text mb-5 ml-5">
+                                        <v-btn v-bind="attrs" v-on="on" rounded small color="grey darken-3" class="white--text mb-5 ml-5" @click="apostaSimples">
                                             Aposta Simples
                                         </v-btn>                    
                                     </template>
@@ -187,7 +134,7 @@
                             <v-col cols="6">
                                 <v-tooltip bottom>
                                     <template v-slot:activator="{ on, attrs }">    
-                                        <v-btn v-bind="attrs" v-on="on" rounded small color="grey darken-3" class="white--text">
+                                        <v-btn v-bind="attrs" v-on="on" rounded small color="grey darken-3" class="white--text" @click="apostaMultipla">
                                             Aposta Múltipla
                                         </v-btn>                    
                                     </template>
@@ -218,80 +165,60 @@
                         </v-card-actions>
                     </v-card>
                 </v-row>
-
-                <v-row> 
-                    <v-card class="mx-auto sticky-card3" max-width="350" height="150" outlined>
-                        fsddf
+                <!--Aposta Multipla-->
+                <v-row v-if="isMultiple"> 
+                    <v-card class="mx-auto sticky-card3" width="350" height="150" outlined>
+                        <v-row no-gutters class="mt-3">
+                            <v-col cols="6">
+                                <v-text-field v-model="montante" filled dense rounded label="Montante" class="mr-5 ml-1" @input="updateGanhos"  />
+                            </v-col>
+                            <v-col cols="6">
+                                <b class="mt-5 ml-2">Odd Total</b> <span class="ml-5">{{totalOdd}}</span> 
+                                <v-spacer></v-spacer>
+                                <b class="ml-2">Ganhos </b> {{ganhos}}
+                            </v-col>
+                        </v-row>
+                        <v-row no-gutters class="mb-5">
+                            <v-col cols="12">
+                                <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">    
+                                    <v-btn v-bind="attrs" v-on="on" color="#29E898" rounded elevation="2" class="ml-3 mt-1" width="320px" @click="printGanhos">
+                                        <h4 class="white--text mt-1">Efetuar Aposta!</h4> 
+                                    </v-btn>                    
+                                </template>
+                                <span>Efetuar Aposta</span>
+                            </v-tooltip>
+                            </v-col>
+                        </v-row>
                     </v-card>
                 </v-row>
-
-                    <!--<v-card class="ml-15 sticky-card">
-                        <v-card-title>
-                            <v-row>
-                                <v-col cols="1">
-                                    <v-icon color="indigo darken-4" dense>mdi-cart</v-icon>
-                                </v-col>
-                                <v-col cols="8">
-                                    <h4 class="indigo--text darken-4--text" dense>Boletim de Apostas  </h4>  
-                                </v-col>
-                                <v-col cols="3">
-                                    <v-tooltip bottom>
-                                        <template v-slot:activator="{ on, attrs }">    
-                                            <v-btn v-bind="attrs" v-on="on" rounded icon right>
-                                            <v-icon>mdi-delete</v-icon>
-                                            </v-btn>                    
-                                        </template>
-                                        <span>Apagar Boletim</span>
-                                    </v-tooltip>
-                                </v-col>
-                            </v-row>     
-                            <v-row dense>
-                                <v-col cols="6">
-                                    <v-tooltip bottom>
-                                        <template v-slot:activator="{ on, attrs }">    
-                                            <v-btn v-bind="attrs" v-on="on" rounded small color="grey darken-3" class="white--text">
-                                                Aposta Simples
-                                            </v-btn>                    
-                                        </template>
-                                        <span>Aposta Simples</span>
-                                    </v-tooltip>
-                                </v-col>
-                                <v-col cols="6">
-                                    <v-tooltip bottom>
-                                        <template v-slot:activator="{ on, attrs }">    
-                                            <v-btn v-bind="attrs" v-on="on" rounded small color="grey darken-3" class="white--text">
-                                                Aposta Múltipla
-                                            </v-btn>                    
-                                        </template>
-                                        <span>Aposta Múltipla</span>
-                                    </v-tooltip>
-                                    
-                                </v-col>
-                            </v-row>   
-                                    
-                        </v-card-title>
-                        <v-divider></v-divider>
-                        <v-row v-for="item in items" :key="item.message" dense>
-                                    <v-card>
-                                        <v-card-title>
-                                            {{item.home}} vs {{item.away}}
-                                        </v-card-title>
-                                        
-                                    </v-card>
-                                </v-row>>
-
-                        <v-divider></v-divider>
-                            <v-card>
-                                <v-btn class="boletimbtn mb-5" block rounded color="green">
-                                Confirmar Aposta
-                            </v-btn>
-                            </v-card>
-            
-                            
-                            
-                          
-                    </v-card>-->
-                
+                <!--Aposta Simples-->
+                <v-row v-if="isSimple"> 
+                    <v-card class="mx-auto sticky-card3" width="350" height="150" outlined>
+                        <v-row no-gutters class="mt-3">
+                            <v-col cols="12">
+                                
+                                <b class="ml-2">Número de Apostas</b><span class="num">{{totalOdd}}</span>
+                                <v-spacer></v-spacer>
+                                <b class="ml-2">Montante Total</b><span class="odd">{{totalOdd}}</span>
+                                <v-spacer></v-spacer>
+                                <b class="ml-2">Ganhos Totais</b><span class="ganhos">{{totalOdd}}</span>
+                            </v-col>
+                        </v-row>
+                        <v-row no-gutters class="mb-5 mt-3">
+                            <v-col cols="12">
+                                <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">    
+                                    <v-btn v-bind="attrs" v-on="on" color="#29E898" rounded elevation="2" class="ml-3" width="320px" @click="printGanhos">
+                                        <h4 class="white--text mt-1">Efetuar Aposta!</h4> 
+                                    </v-btn>                    
+                                </template>
+                                <span>Efetuar Aposta</span>
+                            </v-tooltip>
+                            </v-col>
+                        </v-row>
+                    </v-card>
+                </v-row>
             </v-col>
         </v-row>  
         <Footer/>
@@ -337,7 +264,15 @@ export default {
                 {nome: 'MMA', icon: 'mdi-mixed-martial-arts'},
                 {nome: 'Snooker', icon: 'mdi-billiards-rack'}
             ],
-            events: []
+            events: [],
+            aposta: [],
+            isSimple: true,
+            isMultiple: true,
+            montante: '',
+            ganhos: '',
+            totalOdd: '3.25',
+            sportType: ''
+
         }
     },
     created(){
@@ -352,6 +287,7 @@ export default {
             },(error) =>{
                 console.log(error);
         });
+        console.log(this.events)
     },
     mounted(){
         axios.get('http://localhost:8001/user', {headers: {token: localStorage.get('token')}})
@@ -368,9 +304,32 @@ export default {
         },
         deleteBoletim(){
 
-        }
-    }
+        },
+        apostaSimples(){
+            this.isSimple = true
+            this.isMultiple = false
+        },
 
+        apostaMultipla(){
+            this.isSimple = false
+            this.isMultiple = true
+        },
+        updateGanhos(){
+            if(isNaN(parseFloat(this.totalOdd)*parseFloat(this.montante))){
+                this.ganhos=''
+            }else{
+                this.ganhos = (parseFloat(this.totalOdd)*parseFloat(this.montante)).toFixed(2) + ' EUR'
+            }
+            
+           
+        },
+        printGanhos(){
+            console.log(this.ganhos)
+        },
+        printDesporto(item){
+            console.log(item)
+        }
+    },
 }
 </script>
 
@@ -392,13 +351,13 @@ export default {
 
 .sticky-card2 {
   position: fixed;
-  top:185px;
+  top:195px;
   left:1489px
 } 
 
 .sticky-card3 {
   position: fixed;
-  top:774px;
+  top:695px;
   left:1489px
 } 
 
@@ -414,6 +373,18 @@ export default {
 .cardtitle {
     background-color: rgb(26, 35, 126)
 }
+
+.num {
+  padding-left: 100px;
+}
+.odd {
+  padding-left: 133px;
+}
+
+.ganhos {
+  padding-left: 139px;
+}
+
 
 </style>
 

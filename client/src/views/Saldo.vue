@@ -124,7 +124,7 @@
                                         </v-col>
                                     </v-radio-group>
                                     <v-col class="mt-3" cols="3" md="3" sm="3" xm="3">
-                                        <v-text-field class="mt-3" v-model="valueToConvert" v-on:change="calculateConversion" label="Introduza Valor a Converter" dense/>
+                                        <v-text-field class="mt-3" v-model="valueToConvert" v-on:input="calculateConversion" label="Introduza Valor a Converter" dense/>
                                     </v-col>                                
                                 </v-row>
 

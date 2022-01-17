@@ -11,7 +11,7 @@ var userSchema = new mongoose.Schema(
           type: String
         },
         password: String,
-        type: String,
+        user_type: String,
         balance: {
           EUR: String,
           USD: String,

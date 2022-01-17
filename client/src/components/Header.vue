@@ -113,7 +113,7 @@
                         <h4>João Amorim</h4> 
     
                 </v-list-item>
-                <v-list-item v-if="this.user_type==='admin'" link :to="admin">                 
+                <v-list-item v-if="user_type=='Admin'" link :to="admin">                 
                         <v-icon class="mr-2">mdi-plus</v-icon>   
                          <v-list-item-title> Inserir Evento</v-list-item-title>              
                 </v-list-item>
@@ -181,7 +181,9 @@ export default {
                 if(this.coinType==='ADA'){
                     this.finalBalance=res.data.user.balance.ADA + ' ADA'
                 }
-                this.user_type= res.data.user.type
+                console.log(res.data)
+                this.user_type= res.data.user.user_type
+                
         })      
     },
     methods:{  

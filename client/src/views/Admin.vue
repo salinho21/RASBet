@@ -93,8 +93,23 @@ export default {
                 state: 'Aberto'
             },
             desportos:['Futebol', 'Basquetebol', 'Andebol', 'F1'],
-            racers:['Lewis Hamilton', 'Max Verstappen', ' Valteri Bottas', 'Sergio Perez', 'Charles Leclerc', 'Carlos Sainz','Lando Norris','Ricciardo', 'Fernando Alonso']
+            racers:['Lewis Hamilton', 'Max Verstappen', ' Valteri Bottas', 'Sergio Perez', 'Charles Leclerc', 'Carlos Sainz','Lando Norris','Ricciardo', 'Fernando Alonso'],
+            user_type: ''
         }
+    },
+
+    created(){
+        if(localStorage.getItem('token')===null){
+            this.$router.push('/authentication')
+        }
+        
+        axios.get('http://localhost:8001/user', {headers: {token: localStorage.getItem('token')}})
+            .then(res => {
+                this.user_type = res.data.user.user_type
+                console.log(res.data.user.type)
+                if(this.user_type != 'Admin')
+                    this.$router.push('/authentication')    
+        })      
     },
     methods:{
         inserir(){

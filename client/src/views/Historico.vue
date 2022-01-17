@@ -7,7 +7,7 @@
                     <v-card class="mt-16" color="indigo darken-4" elevation="10">
                         <v-row >
                             <v-col>
-                                <v-card-title class="white--text text-h4 mr-5">
+                                <v-card-title class="text-h4 mr-5">
                                     <v-icon class="mr-3" size="50px" color="white">
                                         mdi-view-list-outline
                                     </v-icon>
@@ -18,7 +18,6 @@
                     </v-card>
                     <v-card>
                         <v-card-title>
-                            
                             <v-spacer></v-spacer>
                             <v-text-field class="ml-16 mr-5"
                                 v-model="search"
@@ -27,24 +26,24 @@
                                 single-line
                                 hide-details
                             ></v-text-field>
-                            </v-card-title>
-                            <v-data-table :headers="headers" :items="bets" :search="search" :single-expand="singleExpand" :expanded.sync="expanded" item-key="_id" show-expand class="elevation-1 mt-5">
-                                <template v-slot:expanded-item="{ headers, item }">
-                                    <tr :colspan="headers.length" v-for="(i,index) in bets" :key="i.sport">
-                                        <p class="mt-5 ml-5">
-                                            <b>Desporto:</b> {{item.events[index].sport}} 
-                                            <v-spacer class="ml-2"/> 
-                                            <b>Evento: </b> {{item.events[index].evento}}
-                                            <v-spacer class="ml-2"/> 
-                                            <b>Aposta Em: </b> {{item.events[index].aposta}}
-                                            <v-spacer class="ml-2"/> 
-                                            <b>Estado: </b> {{item.events[index].estado}}
-                                            <v-spacer class="ml-2"/> 
-                                            <b>Odd:</b> {{item.events[index].odd}}
-                                        </p>                               
-                                    </tr>
-                                </template>
-                            </v-data-table>
+                        </v-card-title>
+                        <v-data-table :headers="headers" :items="bets" :search="search" :single-expand="singleExpand" :expanded.sync="expanded" item-key="_id" show-expand class="elevation-1 mt-5">
+                            <template v-slot:expanded-item="{ headers, item }">
+                                <tr :colspan="headers.length" v-for="(i,index) in bets" :key="i.sport">
+                                    <p class="mt-5 ml-5">
+                                        <b>Desporto:</b> {{item.events[index].sport}} 
+                                        <v-spacer class="ml-2"/> 
+                                        <b>Evento: </b> {{item.events[index].evento}}
+                                        <v-spacer class="ml-2"/> 
+                                        <b>Aposta Em: </b> {{item.events[index].aposta}}
+                                        <v-spacer class="ml-2"/> 
+                                        <b>Estado: </b> {{item.events[index].estado}}
+                                        <v-spacer class="ml-2"/> 
+                                        <b>Odd:</b> {{item.events[index].odd}}
+                                    </p>                            
+                                </tr>
+                            </template>
+                        </v-data-table>
                     </v-card>
                 </v-flex>
             </v-layout>

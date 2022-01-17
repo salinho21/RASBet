@@ -5,16 +5,16 @@
             <v-col cols="3">
                 <v-card
                     class="ml-16 sticky-card"
-                    height="350"
+                    height="420"
                     width="350"                  
                 >
                     
                  <v-navigation-drawer permanent width="100%">
                     <v-list-item class="title">
                         <v-list-item-content>
-                        <v-list-item-title class="text-h6 title white--text">
-                            Desportos
-                        </v-list-item-title>
+                            <v-list-item-title class="text-h6 title white--text">
+                                Desportos
+                            </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                     
@@ -46,7 +46,7 @@
                 <v-row dense>
                     <v-card width="1000" class="mb-4" >
                         <v-card-title>
-                            <v-icon>mdi-soccer</v-icon>
+                            <v-icon >mdi-soccer</v-icon>
                             <h6>Futebol</h6>
                         </v-card-title>              
                     </v-card>
@@ -54,21 +54,19 @@
                
                 <v-row v-for="item in items" :key="item.message" dense>
                     
-                    <v-card class="mb-3" width="1000">
-                        <v-row>
-                            <v-card-title height="2">
-                            <v-icon class="mr-1">mdi-soccer</v-icon>
-                            <h6>{{item.message}}</h6>
-                        </v-card-title>
-                        </v-row>
+                    <v-card class="mb-3" width="1000" >
+                            <v-card-title height="2" class="white--text cardtitle">
+                                <v-icon class="mr-1" color="white">mdi-soccer</v-icon>
+                                <h6>{{item.message}}</h6>
+                            </v-card-title>
                         <v-row>
                             <v-col cols="4">
-                                <h4 class="ml-3 mb-2">Real Madrid - Barcelona</h4> 
+                                <h4 class="ml-3 mb-2 mt-7">Real Madrid x Barcelona</h4> 
                             </v-col>
                             <v-col cols="8">
                             <v-tooltip bottom>
                                     <template v-slot:activator="{ on, attrs }"> 
-                                            <v-btn v-bind="attrs" v-on="on" class="mr-5 mb-5 white--text" color="indigo darken-4" large>
+                                            <v-btn v-bind="attrs" v-on="on" class="mr-8 mb-5 mt-5 white--text" color="indigo darken-4" dense>
                                                 <h3 color="white--text ">1.2</h3> 
                                             </v-btn>                   
                                     </template>
@@ -76,7 +74,7 @@
                                 </v-tooltip>
                             <v-tooltip bottom>
                                     <template v-slot:activator="{ on, attrs }"> 
-                                            <v-btn v-bind="attrs" v-on="on" class="mr-5 mb-5 white--text" color="indigo darken-4" large>
+                                            <v-btn v-bind="attrs" v-on="on" class="mr-8 mb-5 mt-5 white--text" color="indigo darken-4" dense>
                                                 <h3>1.82</h3>
                                             </v-btn>                   
                                     </template>
@@ -84,7 +82,7 @@
                                 </v-tooltip>    
                             <v-tooltip bottom>
                                     <template v-slot:activator="{ on, attrs }"> 
-                                            <v-btn v-bind="attrs" v-on="on" class="mr-5 mb-5 white--text" color="indigo darken-4" large>
+                                            <v-btn v-bind="attrs" v-on="on" class="mr-5 mb-5 mt-5 white--text" color="indigo darken-4" dense>
                                                 <h3>3.35</h3>
                                             </v-btn>                   
                                     </template>
@@ -95,24 +93,6 @@
                    </v-card>
                 </v-row>
             </v-col>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
             <v-col cols="3">
@@ -341,7 +321,9 @@ export default {
                 {nome: 'Hóquei no Gelo', icon: 'mdi-hockey-sticks'},
                 {nome: 'Andebol', icon: 'mdi-handball'},
                 {nome: 'Ténis', icon: 'mdi-tennis-ball'},
-                {nome: 'Voleibol', icon: 'mdi-volleyball'}
+                {nome: 'Voleibol', icon: 'mdi-volleyball'},
+                {nome: 'MMA', icon: 'mdi-mixed-martial-arts'},
+                {nome: 'Snooker', icon: 'mdi-billiards-rack'}
             ],
             events: []
         }
@@ -415,7 +397,11 @@ export default {
 
 .title {
     background-color: rgb(26, 35, 126)
-
 }
+
+.cardtitle {
+    background-color: rgb(26, 35, 126)
+}
+
 </style>
 

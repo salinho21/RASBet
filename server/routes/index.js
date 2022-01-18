@@ -114,21 +114,28 @@ router.put('/user', function(req, res){
 })
 
 router.post('/evento', function(req, res){
+  var today = new Date();
+  var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  var dateTime = date+' '+time; 
   const newEvento = {
     sport: req.body.sport,
     team1: req.body.team1,
     team2: req.body.team2,
-    type: 'Full time',
     result_odd: {
       home: req.body.home,
-      tie: req.body.tie,
+      tie: req.body.tie || '',
       away: req.body.away
     },
+    date: dateTime,
+    result1: '0',
+    result2: '0',
+    winner:'',
     state: req.body.state
   }
-  Event.inserir(newEvento)
-    .then(dados => res.status(201).jsonp({dados: dados}))
-    .catch(e => res.status(500).jsonp({error: 'erro'}))
+Event.inserir(newEvento)
+  .then(dados => res.status(201).jsonp({dados: dados}))
+  .catch(e => res.status(500).jsonp({error: 'erro'}))
 })
 
 

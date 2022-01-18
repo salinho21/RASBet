@@ -29,15 +29,7 @@
                                     ></v-select>
                                 </v-col>
                             </v-row>
-                             <v-col cols="12" class="mb-5"><v-divider/></v-col>
-                            <div  v-if="formData.sport=== 'F1'">
-                            <v-row class="ml-6">
-                                <v-col cols="6">
-                                    
-                                </v-col>
-                            </v-row>
-                            </div>
-                            <div v-else>
+                             <v-col cols="12" class="mb-5"><v-divider/></v-col>  
                             <v-row  class="ml-4">
                                 <v-col cols="4">
                                     <v-text-field v-model="formData.team1" label="Equipa visitada"/>
@@ -46,6 +38,17 @@
                                     <v-text-field v-model="formData.team2" label="Equipa visitante"/>
                                 </v-col>
                             </v-row>
+                            <v-div v-if="formData.sport===  'Basquetebol' || formData.sport===  'MMA' || formData.sport===  'Voleibol' || formData.sport===  'Ténis' ||formData.sport=== 'Snooker'  ">
+                             <v-row class="ml-4">
+                                <v-col cols="2">
+                                    <v-text-field v-model="formData.home" label="Odd home"/>
+                                </v-col>
+                                <v-col cols="2">
+                                    <v-text-field v-model="formData.away" label="Odd away"/>
+                                </v-col>
+                            </v-row>
+                            </v-div>
+                            <v-div v-else>
                             <v-row class="ml-4">
                                 <v-col cols="2">
                                     <v-text-field v-model="formData.home" label="Odd home"/>
@@ -57,7 +60,7 @@
                                     <v-text-field v-model="formData.away" label="Odd away"/>
                                 </v-col>
                             </v-row>
-                            </div>
+                            </v-div>
                             <v-row justify="end">
                                 <v-btn class="white--text text-h6 mr-12 mb-8" dense color="indigo darken-4" @click="inserir">
                                     Adicionar
@@ -92,9 +95,9 @@ export default {
                 away: '',
                 state: 'Aberto'
             },
-            desportos:['Futebol', 'Basquetebol', 'Andebol', 'F1'],
-            racers:['Lewis Hamilton', 'Max Verstappen', ' Valteri Bottas', 'Sergio Perez', 'Charles Leclerc', 'Carlos Sainz','Lando Norris','Ricciardo', 'Fernando Alonso'],
-            user_type: ''
+            desportos:['Futebol', 'Basquetebol','Hoquei no Gelo', 'Andebol','Ténis', 'Voleibol', 'MMA', 'Snooker'],
+            user_type: '',
+            valid: true
         }
     },
 
@@ -106,7 +109,7 @@ export default {
         axios.get('http://localhost:8001/user', {headers: {token: localStorage.getItem('token')}})
             .then(res => {
                 this.user_type = res.data.user.user_type
-                console.log(res.data.user.type)
+                console.log(res.data.user.user_type)
                 if(this.user_type != 'Admin')
                     this.$router.push('/authentication')    
         })      
@@ -116,9 +119,11 @@ export default {
             axios.post(`http://localhost:8001/evento`, this.formData)
                 .then((response)=>{
                     console.log(response)
+                    this.formData.tie = ''
                 }).catch((error)=>{
                     console.log(error)
                 })
+                
         }
     }
 }

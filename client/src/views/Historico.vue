@@ -31,16 +31,16 @@
                             <template v-slot:expanded-item="{ headers, item }">
                                 <tr :colspan="headers.length" v-for="(i,index) in bets" :key="i.type">
                                         <p class="mt-5 ml-5">
-                                        <b>Desporto:</b> {{item.events[0].sport}} {{index}}
+                                        <b>Desporto:</b> {{item.events[index].sport}} {{index}}
                                         <v-spacer class="ml-2"/> 
-                                        <b>Evento: </b> {{item.events[0].evento}}
+                                        <b>Evento: </b> {{item.events[index].evento}}
                                         <v-spacer class="ml-2"/> 
-                                        <b>Aposta Em: </b> {{item.events[0].aposta}}
+                                        <b>Aposta Em: </b> {{item.events[index].aposta}}
                                         <v-spacer class="ml-2"/> 
-                                        <b>Estado: </b> {{item.events[0].estado}}
+                                        <b>Estado: </b> {{item.events[index].estado}}
                                         <v-spacer class="ml-2"/> 
-                                        <b>Odd:</b> {{item.events[0].odd}}
-                                        {{bets.map(function(x) {return x.id; }).indexOf(item.id)}}
+                                        <b>Odd:</b> {{item.events[index].odd}}
+                                        
                                     </p>                          
                                 </tr>
                             </template>

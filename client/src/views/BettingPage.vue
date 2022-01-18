@@ -94,6 +94,14 @@
                                 <span>Away Team</span>
                             </v-tooltip>
                         </v-col >
+                        <v-col cols="1">
+                            <v-tooltip bottom>
+                                <template v-if="user_type=='Admin'" v-slot:activator="{ on, attrs }">
+                                    <v-icon v-bind="attrs" v-on="on" class="ml-5 mt-4" @click="openEdit(event)">mdi-pencil</v-icon>
+                                </template>
+                                <span>Editar</span>
+                            </v-tooltip>
+                        </v-col>
                     </v-row>          
                 </v-card>
             </v-col>
@@ -206,10 +214,11 @@
                             </v-col>
                         </v-row>
                         <v-row no-gutters class="mb-5">
+                            <span class="ex">{{erroSaldo}}</span>
                             <v-col cols="12">
                                 <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">    
-                                    <v-btn v-bind="attrs" v-on="on" color="#29E898" rounded elevation="2" class="ml-3 mt-1" width="320px" @click="printGanhos">
+                                    <v-btn v-bind="attrs" v-on="on" color="#29E898" rounded elevation="2" class="ml-3 mt-1" width="320px" @click="openEfetuarAposta">
                                         <h4 class="white--text mt-1">Efetuar Aposta!</h4> 
                                     </v-btn>                    
                                 </template>
@@ -233,10 +242,11 @@
                             </v-col>
                         </v-row>
                         <v-row no-gutters class="mb-5 mt-3">
+                            <span class="ex">{{erroSaldo}}</span>
                             <v-col cols="12">
                                 <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">    
-                                    <v-btn v-bind="attrs" v-on="on" color="#29E898" rounded elevation="2" class="ml-3" width="320px" @click="submitBet">
+                                    <v-btn v-bind="attrs" v-on="on" color="#29E898" rounded elevation="2" class="ml-3" width="320px" @click="openEfetuarAposta">
                                         <h4 class="white--text mt-1">Efetuar Aposta!</h4> 
                                     </v-btn>                    
                                 </template>
@@ -246,6 +256,113 @@
                         </v-row>
                     </v-card>
                 </v-row>
+                <!-- Janela para Confirmação da Submissão -->
+                <v-dialog v-model="openSubmit" max-width="500px">
+                    <v-card>
+                        <v-app-bar color="indigo darken-4" >
+                        <div class="d-flex align-center">
+                            <h3 width="40" class="white--text"> Confirmar Aposta</h3>
+                        </div>
+                        </v-app-bar>
+                        <v-container>
+                        <v-row>
+                            <v-col cols="3">
+                            <v-card class="ml-4 mt-1" color="white" flat height="100px" width="110px" >
+                                <v-img src="@/assets/questionmark.png"/>
+                            </v-card>
+                            </v-col>
+                            <v-col cols="9">
+                                <h3 class="ml-5 mt-5">Pretende efetuar Aposta? Esta acção é irreversível.</h3>
+                            </v-col>
+                        </v-row>
+                        </v-container>
+                        <v-card-actions>
+                        <v-container>
+                            <v-row >
+                                <v-col class="text-right">
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on, attrs }">   
+                                        <v-btn v-bind="attrs" v-on="on" color="#29E898" @click="submitBet" elevation="5" class="mt-5 mr-3">
+                                            <v-icon color="white">mdi-checkbox-marked-outline</v-icon>
+                                        </v-btn>                     
+                                    </template>
+                                    <span>Confirmar Aposta</span>
+                                </v-tooltip>
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on, attrs }">   
+                                    <v-btn v-bind="attrs" v-on="on" color="#F0B62B" @click="closeEfetuarAposta" elevation="5" class="mt-5">
+                                        <v-icon color="white">mdi-door-open</v-icon>
+                                    </v-btn>                     
+                                    </template>
+                                    <span>Sair</span>
+                                </v-tooltip>
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <!-- Edit Dialog -->
+                <v-dialog v-model="dialog" persistent max-width="600px">
+                    <v-card>
+                        <v-card-title>
+                            <span class="text-h5">Editar Evento</span>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-container>
+                                <v-row>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field label="Equipa 1" readonly :value="editedItem.team1"/>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field label="Empate" readonly value="             X"/>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field label="Equipa 2" readonly :value="editedItem.team2"/>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field label="Odd Home" v-model="editedItem.oddHome"> 
+                                            {{editedItem.oddHome}}
+                                        </v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field label="Odd Tie" v-model="editedItem.oddTie"> 
+                                            {{editedItem.oddTie}}
+                                        </v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field label="Odd Away" v-model="editedItem.oddAway"> 
+                                            {{editedItem.oddAway}}
+                                        </v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field label="Resultado Home" v-model="editedItem.resultTeam1"> 
+                                            {{editedItem.resultTeam1}}
+                                        </v-text-field>
+                                    </v-col>
+                                    <v-col cols="2"></v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field label="Resultado Away" v-model="editedItem.resultTeam2"> 
+                                            {{editedItem.resultTeam2}}
+                                        </v-text-field>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-select :items="estados" label="Estado da Aposta" :value="editedItem.estado"/>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="blue darken-1" text @click="close">
+                                Close
+                            </v-btn>
+                            <v-btn color="blue darken-1" text @click="save">
+                                Save
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
             </v-col>
         </v-row>  
         <Footer/>
@@ -284,6 +401,7 @@ export default {
             ganhos: '',
             totalOdd: '3.25',
             numApostas: 0,
+            openSubmit: false,
             formData:{
                 sportType: 'Futebol'
             },
@@ -296,7 +414,34 @@ export default {
                 ganhos: '',
                 state: 'Aberta',
                 date: new Date().toLocaleString()
-            }
+            },
+            userData:{
+                _id: '',
+                currentCoin: '',
+                balance:{
+                    EUR: '',
+                    USD: '',
+                    GBP: '',
+                    ADA: ''
+                }
+            }, 
+            saldo: '',
+            saldoFinal: '',
+            erroSaldo: '',
+            editedItem:{
+                oddHome:'',
+                oddTie:'',
+                oddAway:'',
+                sport:'',
+                team1:'',
+                team2:'',
+                resultTeam1:'',
+                resultTeam2:'',
+                estado:''
+            },
+            estados: ['A decorrer','Terminado'],
+            dialog: false,
+            user_type:''
         }
     },
     created(){
@@ -307,6 +452,27 @@ export default {
         axios.get('http://localhost:8001/user', {headers: {token: localStorage.getItem('token')}})
             .then(res => {
                 this.betData.user_id = res.data.user._id
+                this.userData._id = res.data.user._id
+                this.user_type= res.data.user.user_type
+                this.userData.currentCoin = res.data.user.currentCoin
+                this.userData.balance.EUR = res.data.user.balance.EUR
+                this.userData.balance.USD = res.data.user.balance.USD
+                this.userData.balance.GBP = res.data.user.balance.GBP
+                this.userData.balance.ADA = res.data.user.balance.ADA
+                if(this.userData.currentCoin==='EUR'){
+                    this.saldo=this.userData.balance.EUR
+                    console.log(this.saldo)
+                }
+                if(this.userData.currentCoin==='USD'){
+                    this.saldo=this.userData.balance.USD
+                }
+                if(this.userData.currentCoin==='GBP'){
+                    this.saldo=this.userData.balance.GBP
+                }
+                if(this.userData.currentCoin==='ADA'){
+                    this.saldo=this.userData.balance.ADA
+                }
+                
         })    
 
         axios.get(`http://localhost:8001/evento`, {headers: {sportType: this.formData.sportType}})
@@ -324,6 +490,40 @@ export default {
             localStorage.clear();
             this.$router.push('/auth')
         },
+
+        openEdit(event){
+            console.log(event)
+            this.editedItem.team1=event.team1
+            this.editedItem.team2=event.team2
+            this.editedItem.sport=event.sport
+            this.editedItem.estado=event.estado
+            this.editedItem.oddHome=event.result_odd.home
+            this.editedItem.oddTie=event.result_odd.tie
+            this.editedItem.oddAway=event.result_odd.away
+            this.editedItem.resultTeam1=event.result1
+            this.editedItem.resultTeam2=event.result2
+            this.dialog=true
+        },
+        close(){
+            this.editedItem.team1='',
+            this.editedItem.team2='',
+            this.editedItem.sport='',
+            this.editedItem.estado='',
+            this.editedItem.oddHome='',
+            this.editedItem.oddTie='',
+            this.editedItem.oddAway='',
+            this.editedItem.resultTeam1='', 
+            this.editedItem.resultTeam2='',
+            this.dialog=false
+
+        },
+
+        save(){
+
+            //buscar as cenas ao editedItem e fazer put e lógica toda da cena aqui
+            this.dialog=false
+        },
+
         deleteBoletim(){
 
         },
@@ -332,6 +532,7 @@ export default {
                 this.apostas.splice(0)
                 this.betData.events.splice(0)
                 this.betData.total_odd = ''
+                this.betData.bet_ammount = ''
             }
             this.isSimple = true
             this.isMultiple = false
@@ -342,11 +543,20 @@ export default {
                 this.apostas.splice(0)
                 this.betData.events.splice(0)
                 this.betData.total_odd = ''
+                this.betData.bet_ammount = ''
             }
             this.isSimple = false
             this.isMultiple = true
         },
         updateGanhos(){
+            let x = parseFloat(this.saldo)
+            let y = parseFloat(this.betData.bet_ammount)
+            let dif = x-y
+            if(dif>=0){
+                this.erroSaldo = ''
+            }else{
+                this.erroSaldo = 'Saldo insuficiente para realizar esta aposta'
+            }
             if(isNaN(parseFloat(this.betData.bet_ammount)*parseFloat(this.betData.total_odd))){
                 this.betData.ganhos = ''
             }else{
@@ -354,6 +564,15 @@ export default {
             }
         },
         updateGanhosSimples(){
+            let x = parseFloat(this.saldo)
+            let y = parseFloat(this.betData.bet_ammount)
+            let dif = x-y
+            if(dif>=0){
+                this.erroSaldo = ''
+            }else{
+                this.erroSaldo = 'Saldo insuficiente para realizar esta aposta'
+            }
+
             if(isNaN(parseFloat(this.betData.bet_ammount)*parseFloat(this.betData.total_odd))){
                 this.betData.ganhos = ''
             }else{
@@ -374,15 +593,24 @@ export default {
         },
         addBoletim(item,odd,result){
             let e = {
+                _id: item._id,
                 sport: item.sport,
                 evento: item.team1 + ' x ' + item.team2,
                 aposta: result,
                 estado: item.state,
-                valor: '',
                 odd: odd
             }
+            console.log(e._id)
+            let repetido = false
 
-            if(this.isSimple){
+            this.betData.events.forEach((obj)=>{
+                if(obj._id==e._id)
+                    repetido = true
+            })
+            console.log(repetido)
+            
+            if(!repetido){
+                if(this.isSimple){
                 this.betData.ganhos = ''
                 this.numApostas = 0
                 this.betData.events.splice(0)
@@ -401,7 +629,9 @@ export default {
 
                 this.betData.total_odd = (parseFloat(odd)*parseFloat(this.betData.total_odd || '1')).toFixed(2) 
 
-            }        
+            }
+            }
+                    
         },
         clearBoletim(){
             this.betData.events.splice(0)
@@ -411,14 +641,44 @@ export default {
             this.betData.total_odd = ''
         },
 
+        openEfetuarAposta(){
+            let x = parseFloat(this.saldo)
+            let y = parseFloat(this.betData.bet_ammount)
+            let dif = x-y
+            if(dif>=0){
+                this.erroSaldo = ''
+                this.openSubmit = true
+            }else{
+                this.erroSaldo = 'Saldo insuficiente para realizar esta aposta'
+            }
+                
+        },
+
+        closeEfetuarAposta(){
+            this.openSubmit = false
+        },
+
         submitBet(){
             console.log(this.betData)
-             axios.post(`http://localhost:8001/bet`, this.betData)
+            axios.post(`http://localhost:8001/bet`, this.betData)
                 .then(function(response){
+                    if(this.userData.currentCoin==='EUR'){
+                        this.userData.balance.EUR = (parseFloat(this.userData.balance.EUR)-parseFloat(this.betData.bet_ammount)).toFixed(2)
+                    }
+                    if(this.userData.currentCoin==='USD'){
+                        this.userData.balance.USD = (parseFloat(this.userData.balance.USD)-parseFloat(this.betData.bet_ammount)).toFixed(2)
+                    }
+                    if(this.userData.currentCoin==='GBP'){
+                        this.userData.balance.GBP = (parseFloat(this.userData.balance.GBP)-parseFloat(this.betData.bet_ammount)).toFixed(2)
+                    }
+                    if(this.userData.currentCoin==='ADA'){
+                        this.userData.balance.ADA = (parseFloat(this.userData.balance.ADA)-parseFloat(this.betData.bet_ammount)).toFixed(2)
+                    }
                     console.log(response)
                 },(error) =>{
                     console.log(error);
             }); 
+            location.reload()
         },
     },
 }
@@ -484,7 +744,9 @@ export default {
   padding-left: 180px;
 }
 
-
+.ex {
+  color: rgb(255, 17, 0);
+}
 
 </style>
 

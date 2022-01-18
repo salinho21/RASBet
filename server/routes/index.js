@@ -168,5 +168,11 @@ router.get('/bet', (req, res, next) => {
   })
 });
 
+router.post('/bet', function(req, res){
+  Bet.inserir(req.body)
+    .then(dados => res.status(201).jsonp({dados: dados}))
+    .catch(e => res.status(500).jsonp({error: 'erro'}))
+})
+
 
 module.exports = router;

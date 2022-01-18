@@ -91,7 +91,10 @@ export default {
         }  
         axios.get('http://localhost:8001/bet', {headers: {token: localStorage.getItem('token')}})
             .then(res => {
-                this.bets = res.data.bets
+                res.data.bets.forEach((obj)=>{
+                    this.bets.push(obj)
+                })
+                console.log(this.bets)
         })      
     },
 

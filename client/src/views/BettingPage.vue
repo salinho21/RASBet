@@ -67,7 +67,7 @@
                         <v-col cols="2" align="center">
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }"> 
-                                    <v-btn v-bind="attrs" v-on="on" class="mt-3 white--text" width="100px" color="indigo darken-4" dense @click="addBoletim(event)">
+                                    <v-btn v-bind="attrs" v-on="on" class="mt-3 white--text" width="100px" color="indigo darken-4" dense @click="addBoletim(event,event.result_odd.home,event.team1)">
                                         <h3 color="white--text "> {{event.result_odd.home}}</h3> 
                                     </v-btn>                   
                                 </template>
@@ -77,7 +77,7 @@
                         <v-col cols="2" align="center">
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }"> 
-                                    <v-btn v-bind="attrs" v-on="on" class="mt-3 mb-4 white--text" width="100px" color="indigo darken-4" dense @click="addBoletim(event)">
+                                    <v-btn v-bind="attrs" v-on="on" class="mt-3 mb-4 white--text" width="100px" color="indigo darken-4" dense @click="addBoletim(event,event.result_odd.tie,'Empate')">
                                         <h3>{{event.result_odd.tie}}</h3>
                                     </v-btn>                   
                                 </template>
@@ -87,7 +87,7 @@
                         <v-col cols="2" align="center">
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }"> 
-                                    <v-btn v-bind="attrs" v-on="on" class="mt-3 white--text" width="100px" color="indigo darken-4" dense @click="addBoletim(event)">
+                                    <v-btn v-bind="attrs" v-on="on" class="mt-3 white--text" width="100px" color="indigo darken-4" dense @click="addBoletim(event,event.result_odd.away,event.team2)">
                                         <h3>{{event.result_odd.away}}</h3>
                                     </v-btn>                   
                                 </template>
@@ -113,8 +113,8 @@
                             <v-col cols="3">
                                 <v-tooltip bottom>
                                     <template v-slot:activator="{ on, attrs }">    
-                                        <v-btn v-bind="attrs" v-on="on" rounded icon right>
-                                        <v-icon class ="ml-2 mt-3">mdi-delete</v-icon>
+                                        <v-btn v-bind="attrs" v-on="on" rounded icon right @click="clearBoletim">
+                                            <v-icon class ="ml-2 mt-3">mdi-delete</v-icon>
                                         </v-btn>                    
                                     </template>
                                     <span>Apagar Boletim</span>
@@ -148,49 +148,48 @@
                 <!--2º Card-->
                 <v-row>
                     <v-col>
-                        <v-card class="mx-auto sticky-card2" width="350" height="590" outlined>
-                        <v-card v-for="aposta in apostas" :key="aposta.sport" class="ml-2 mr-2 mt-1 mb-5">
-                            <v-row no-gutters class="">
-                                <v-col cols="12">
-                                     <span class="ml-2 grey--text">{{aposta.team1}} x {{aposta.team2}}</span>
-                                </v-col>
-                                <v-col cols="12">
-                                    <p class="ml-2"><b>Vitória: {{aposta.team1}} x {{aposta.team2}}</b> </p> 
-                                </v-col>
-                                <v-row no-gutters>
-                                    <v-col cols="7">
-                                        <span class="ml-2">Odd: <b>{{aposta.result_odd.home}}</b></span>
-                                        <span class="ml-2">Ganhos: <b>{{aposta.result_odd.home}}</b></span>
+                        <!-- Simples -->
+                        <v-card v-if="isSimple" class="mx-auto sticky-card2" width="350" height="590" outlined>
+                            <v-card v-for="aposta in betData.events" :key="aposta.sport" elevation="6" class="ml-2 mr-2 mt-1 mb-2">
+                                <v-row no-gutters class="">
+                                    <v-col cols="12">
+                                        <span class="ml-2 grey--text">{{aposta.evento}}</span>
                                     </v-col>
-                                    <v-col cols="4">
-                                        <v-text-field class="" label="Montante"></v-text-field>
+                                    <v-col cols="12">
+                                        <p class="ml-2"><b>Aposta em: {{aposta.aposta}}</b> </p> 
                                     </v-col>
-                                </v-row>
-                                
-                                  
-                            </v-row>
-                                
+                                    <v-row no-gutters>
+                                        <v-col cols="6">
+                                            <v-text-field v-model="betData.bet_ammount" dense rounded label="Montante" class="mr-5 ml-1" @input="updateGanhosSimples"  />
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <b class="mt-5 ml-2">Odd Total</b> <span class="ml-5">{{aposta.odd}}</span> 
+                                            <v-spacer></v-spacer>
+                                            <b class="ml-2">Ganhos </b> {{betData.ganhos}}
+                                        </v-col>
+                                    </v-row>   
+                                </v-row>      
+                            </v-card>
                         </v-card>
-                        <!--<v-list-item three-line>
-                            <v-list-item-content>
-                                <div class="text-overline mb-4">
-                                OVERLINE
-                                </div>
-                                <v-list-item-title class="text-h5 mb-1">
-                                Headline 5
-                                </v-list-item-title>
-                                <v-list-item-subtitle>Greyhound divisely hello coldly fonwderfully</v-list-item-subtitle>
-                            </v-list-item-content>
-                            <v-list-item-avatar tile size="80" color="grey"/>
-                        </v-list-item>
-                        <v-card-actions>
-                            <v-btn outlined rounded text>
-                                Button
-                            </v-btn>
-                        </v-card-actions>-->
-                    </v-card>
+                        <!-- Multipla -->
+                        <v-card v-if="isMultiple" class="mx-auto sticky-card2" width="350" height="590" outlined >
+                            <v-card v-for="aposta in betData.events" :key="aposta.sport" elevation="6" class="ml-2 mr-2 mt-1 mb-2">
+                                <v-row no-gutters class="">
+                                    <v-col cols="12">
+                                        <span class="ml-2 grey--text">{{aposta.evento}}</span>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <p class="ml-2"><b>Aposta em: {{aposta.aposta}}</b> </p> 
+                                    </v-col>
+                                    <v-row no-gutters>
+                                        <v-col cols="12">
+                                            <span class="ml-2">Odd <b class="ganhos2 ml-16">{{aposta.odd}}</b></span>
+                                        </v-col>
+                                    </v-row>    
+                                </v-row>      
+                            </v-card>
+                        </v-card>
                     </v-col>
-                    
                 </v-row>
                 <!--Aposta Multipla-->
                 <!--3º Card-->
@@ -226,18 +225,18 @@
                         <v-row no-gutters class="mt-3">
                             <v-col cols="12">
                                 
-                                <b class="ml-2">Número de Apostas</b><span class="num">{{totalOdd}}</span>
+                                <b class="ml-2">Número de Apostas</b><span class="num">{{numApostas}}</span>
                                 <v-spacer></v-spacer>
-                                <b class="ml-2">Montante Total</b><span class="odd">{{totalOdd}}</span>
+                                <b class="ml-2">Montante Total</b><span class="odd">{{betData.bet_ammount}}</span>
                                 <v-spacer></v-spacer>
-                                <b class="ml-2">Ganhos Totais</b><span class="ganhos">{{totalOdd}}</span>
+                                <b class="ml-2">Ganhos Totais</b><span class="ganhos">{{betData.ganhos}}</span>
                             </v-col>
                         </v-row>
                         <v-row no-gutters class="mb-5 mt-3">
                             <v-col cols="12">
                                 <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">    
-                                    <v-btn v-bind="attrs" v-on="on" color="#29E898" rounded elevation="2" class="ml-3" width="320px" @click="printGanhos">
+                                    <v-btn v-bind="attrs" v-on="on" color="#29E898" rounded elevation="2" class="ml-3" width="320px" @click="submitBet">
                                         <h4 class="white--text mt-1">Efetuar Aposta!</h4> 
                                     </v-btn>                    
                                 </template>
@@ -267,21 +266,6 @@ export default {
         return{
             name: '',
             email: '',
-            items: [
-                { message: 'Espanha - La Liga', home: 'Real Madrid', away: 'Barcelona' },
-                { message: 'Espanha - La Liga', home: 'Real Madrid', away: 'Barcelona' },
-                { message: 'Espanha - La Liga', home: 'Real Madrid', away: 'Barcelona' },
-                { message: 'Espanha - La Liga', home: 'Real Madrid', away: 'Barcelona' },
-                { message: 'Espanha - La Liga', home: 'Real Madrid', away: 'Barcelona' },
-                { message: 'Espanha - La Liga', home: 'Real Madrid', away: 'Barcelona' },
-                { message: 'Espanha - La Liga', home: 'Real Madrid', away: 'Barcelona' },
-                { message: 'Espanha - La Liga', home: 'Real Madrid', away: 'Barcelona' },
-                { message: 'Espanha - La Liga', home: 'Real Madrid', away: 'Barcelona' },
-                { message: 'Espanha - La Liga', home: 'Real Madrid', away: 'Barcelona' },
-                { message: 'Espanha - La Liga', home: 'Real Madrid', away: 'Barcelona' },
-                { message: 'Espanha - La Liga', home: 'Real Madrid', away: 'Barcelona' },
-                { message: 'Espanha - La Liga', home: 'Real Madrid', away: 'Barcelona' }
-            ],
             desportos: [
                 {nome: 'Futebol', icon: 'mdi-soccer' },
                 {nome: 'Basquetebol', icon: 'mdi-basketball'},
@@ -295,21 +279,36 @@ export default {
             events: [],
             apostas: [],
             isSimple: true,
-            isMultiple: true,
+            isMultiple: false,
             montante: '',
             ganhos: '',
             totalOdd: '3.25',
+            numApostas: 0,
+            scrollInvoked: 0,
             formData:{
                 sportType: 'Futebol'
+            },
+            betData:{
+                user_id: '',
+                type: '',
+                events: [],
+                total_odd: '',
+                bet_ammount: '',
+                ganhos: '',
+                state: 'Aberta',
+                date: new Date().toLocaleString()
             }
-            
-
         }
     },
     created(){
         if(localStorage.getItem('token')===null){
             this.$router.push('/authentication')
         }
+
+        axios.get('http://localhost:8001/user', {headers: {token: localStorage.getItem('token')}})
+            .then(res => {
+                this.betData.user_id = res.data.user._id
+        })    
 
         axios.get(`http://localhost:8001/evento`, {headers: {sportType: this.formData.sportType}})
             .then((response)=>{
@@ -320,14 +319,7 @@ export default {
         });
 
     },
-    mounted(){
-        axios.get('http://localhost:8001/user', {headers: {token: localStorage.get('token')}})
-            .then(function(response){
-              console.log(response)
-            },(error) =>{
-                console.log(error);
-            }); 
-    },
+    
     methods: {
         logout() {
             localStorage.clear();
@@ -337,11 +329,17 @@ export default {
 
         },
         apostaSimples(){
+            if(this.isMultiple){
+                this.apostas.splice(0)
+            }
             this.isSimple = true
             this.isMultiple = false
         },
 
         apostaMultipla(){
+            if(this.isSimple){
+                this.apostas.splice(0)
+            }
             this.isSimple = false
             this.isMultiple = true
         },
@@ -349,10 +347,15 @@ export default {
             if(isNaN(parseFloat(this.totalOdd)*parseFloat(this.montante))){
                 this.ganhos=''
             }else{
-                this.ganhos = (parseFloat(this.totalOdd)*parseFloat(this.montante)).toFixed(2) + ' EUR'
+                this.ganhos = (parseFloat(this.totalOdd)*parseFloat(this.montante)).toFixed(2)
             }
-            
-           
+        },
+        updateGanhosSimples(){
+            if(isNaN(parseFloat(this.betData.bet_ammount)*parseFloat(this.betData.total_odd))){
+                this.betData.ganhos = ''
+            }else{
+                this.betData.ganhos = (parseFloat(this.betData.bet_ammount)*parseFloat(this.betData.total_odd)).toFixed(2) + ' EUR'
+            }
         },
         printGanhos(){
             console.log(this.ganhos)
@@ -366,11 +369,52 @@ export default {
                     console.log(error);
             });
         },
-        addBoletim(item){
-            console.log(item)
-            this.apostas.push(item)
-            console.log(this.apostas)
-        }
+        addBoletim(item,odd,result){
+            let e = {
+                sport: item.sport,
+                evento: item.team1 + ' x ' + item.team2,
+                aposta: result,
+                estado: item.state,
+                valor: '',
+                odd: odd
+            }
+
+            if(this.isSimple){
+                
+                this.betData.ganhos = ''
+                this.numApostas = 0
+                this.betData.events.splice(0)
+                this.betData.events.push(e)
+                this.betData.type = 'Simples'
+                this.numApostas++
+                this.betData.total_odd = odd
+                this.betData.bet_ammount = item.valor
+
+            }else{
+                this.betData.events.push(e)
+                this.betData.type = 'Múltipla'
+
+            }        
+        },
+        clearBoletim(){
+            this.betData.events.splice(0)
+            this.numApostas = 0
+            this.betData.ganhos = ''
+            this.betData.bet_ammount = ''
+        },
+
+        submitBet(){
+            console.log(this.betData)
+             axios.post(`http://localhost:8001/bet`, this.betData)
+                .then(function(response){
+                    console.log(response)
+                },(error) =>{
+                    console.log(error);
+            }); 
+        },
+        onScroll () {
+        this.scrollInvoked++
+      },
     },
 }
 </script>
@@ -394,13 +438,17 @@ export default {
 .sticky-card2 {
   position: fixed;
   top:195px;
-  left:1489px
+  left:1489px;
+  flex-grow: 1;
+  overflow: auto;
 } 
 
 .sticky-card3 {
   position: fixed;
   top:695px;
-  left:1489px
+  left:1489px;
+
+  
 } 
 
 .boletimbtn {
@@ -425,6 +473,10 @@ export default {
 
 .ganhos {
   padding-left: 139px;
+}
+
+.ganhos2 {
+  padding-left: 180px;
 }
 
 

@@ -197,12 +197,12 @@
                     <v-card class="mx-auto sticky-card3" width="350" height="150" outlined>
                         <v-row no-gutters class="mt-3">
                             <v-col cols="6">
-                                <v-text-field v-model="montante" filled dense rounded label="Montante" class="mr-5 ml-1" @input="updateGanhos"  />
+                                <v-text-field v-model="betData.bet_ammount" filled dense rounded label="Montante" class="mr-5 ml-1" @input="updateGanhos"  />
                             </v-col>
                             <v-col cols="6">
-                                <b class="mt-5 ml-2">Odd Total</b> <span class="ml-5">{{totalOdd}}</span> 
+                                <b class="mt-5 ml-2">Odd Total</b> <span class="ml-5">{{betData.total_odd}}</span> 
                                 <v-spacer></v-spacer>
-                                <b class="ml-2">Ganhos </b> {{ganhos}}
+                                <b class="ml-2">Ganhos </b> {{betData.ganhos}}
                             </v-col>
                         </v-row>
                         <v-row no-gutters class="mb-5">
@@ -284,7 +284,6 @@ export default {
             ganhos: '',
             totalOdd: '3.25',
             numApostas: 0,
-            scrollInvoked: 0,
             formData:{
                 sportType: 'Futebol'
             },
@@ -292,7 +291,7 @@ export default {
                 user_id: '',
                 type: '',
                 events: [],
-                total_odd: '',
+                total_odd: '1',
                 bet_ammount: '',
                 ganhos: '',
                 state: 'Aberta',
@@ -331,6 +330,8 @@ export default {
         apostaSimples(){
             if(this.isMultiple){
                 this.apostas.splice(0)
+                this.betData.events.splice(0)
+                this.betData.total_odd = ''
             }
             this.isSimple = true
             this.isMultiple = false
@@ -339,15 +340,17 @@ export default {
         apostaMultipla(){
             if(this.isSimple){
                 this.apostas.splice(0)
+                this.betData.events.splice(0)
+                this.betData.total_odd = ''
             }
             this.isSimple = false
             this.isMultiple = true
         },
         updateGanhos(){
-            if(isNaN(parseFloat(this.totalOdd)*parseFloat(this.montante))){
-                this.ganhos=''
+            if(isNaN(parseFloat(this.betData.bet_ammount)*parseFloat(this.betData.total_odd))){
+                this.betData.ganhos = ''
             }else{
-                this.ganhos = (parseFloat(this.totalOdd)*parseFloat(this.montante)).toFixed(2)
+                this.betData.ganhos = (parseFloat(this.betData.bet_ammount)*parseFloat(this.betData.total_odd)).toFixed(2) + ' EUR'
             }
         },
         updateGanhosSimples(){
@@ -380,7 +383,6 @@ export default {
             }
 
             if(this.isSimple){
-                
                 this.betData.ganhos = ''
                 this.numApostas = 0
                 this.betData.events.splice(0)
@@ -391,8 +393,13 @@ export default {
                 this.betData.bet_ammount = item.valor
 
             }else{
-                this.betData.events.push(e)
                 this.betData.type = 'Múltipla'
+                console.log(odd)
+                console.log(e.odd)
+                console.log(this.betData.total_odd)
+                this.betData.events.push(e)
+
+                this.betData.total_odd = (parseFloat(odd)*parseFloat(this.betData.total_odd || '1')).toFixed(2) 
 
             }        
         },
@@ -401,6 +408,7 @@ export default {
             this.numApostas = 0
             this.betData.ganhos = ''
             this.betData.bet_ammount = ''
+            this.betData.total_odd = ''
         },
 
         submitBet(){
@@ -412,9 +420,6 @@ export default {
                     console.log(error);
             }); 
         },
-        onScroll () {
-        this.scrollInvoked++
-      },
     },
 }
 </script>

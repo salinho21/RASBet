@@ -29,18 +29,19 @@
                         </v-card-title>
                         <v-data-table :headers="headers" :items="bets" :search="search" :single-expand="singleExpand" :expanded.sync="expanded" item-key="_id" show-expand class="elevation-1 mt-5">
                             <template v-slot:expanded-item="{ headers, item }">
-                                <tr :colspan="headers.length" v-for="(i,index) in bets" :key="i.sport">
-                                    <p class="mt-5 ml-5">
-                                        <b>Desporto:</b> {{item.events[index].sport}} 
+                                <tr :colspan="headers.length" v-for="(i,index) in bets" :key="i.type">
+                                        <p class="mt-5 ml-5">
+                                        <b>Desporto:</b> {{item.events[0].sport}} {{index}}
                                         <v-spacer class="ml-2"/> 
-                                        <b>Evento: </b> {{item.events[index].evento}}
+                                        <b>Evento: </b> {{item.events[0].evento}}
                                         <v-spacer class="ml-2"/> 
-                                        <b>Aposta Em: </b> {{item.events[index].aposta}}
+                                        <b>Aposta Em: </b> {{item.events[0].aposta}}
                                         <v-spacer class="ml-2"/> 
-                                        <b>Estado: </b> {{item.events[index].estado}}
+                                        <b>Estado: </b> {{item.events[0].estado}}
                                         <v-spacer class="ml-2"/> 
-                                        <b>Odd:</b> {{item.events[index].odd}}
-                                    </p>                            
+                                        <b>Odd:</b> {{item.events[0].odd}}
+                                        {{bets.map(function(x) {return x.id; }).indexOf(item.id)}}
+                                    </p>                          
                                 </tr>
                             </template>
                         </v-data-table>
@@ -76,7 +77,7 @@ export default {
                 },
                 { text: 'Estado', value: 'state' },
                 { text: 'Odd', value: 'total_odd' },
-                { text: 'Valor', value: 'bet_amount' },
+                { text: 'Valor', value: 'bet_ammount' },
                 { text: 'Ganhos', value: 'ganhos' },
                 { text: 'Data', value: 'date' },
                 { text: '', value: 'data-table-expand' }
@@ -91,9 +92,10 @@ export default {
         }  
         axios.get('http://localhost:8001/bet', {headers: {token: localStorage.getItem('token')}})
             .then(res => {
-                res.data.bets.forEach((obj)=>{
+                /*res.data.bets.forEach((obj)=>{
                     this.bets.push(obj)
-                })
+                })*/
+                this.bets = res.data.bets
                 console.log(this.bets)
         })      
     },

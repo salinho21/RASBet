@@ -61,8 +61,11 @@
                         </v-col>
                     </v-row>
                     <v-row no-gutters>
-                        <v-col cols="5">
-                            <h4 class="pt-5 pl-10">{{event.date}}</h4>
+                        <v-col cols="2">
+                            <h4 class="pt-5 pl-5">{{event.date}}</h4>
+                        </v-col>
+                        <v-col cols="3">
+                            <h4 class="pt-5 pl-10">Estado: {{event.state}}</h4>
                         </v-col>
                         <v-col cols="2" align="center">
                             <v-tooltip bottom>
@@ -321,33 +324,33 @@
                                         <v-text-field label="Equipa 2" readonly :value="editedItem.team2"/>
                                     </v-col>
                                     <v-col cols="12" sm="6" md="4">
-                                        <v-text-field label="Odd Home" v-model="editedItem.oddHome"> 
-                                            {{editedItem.oddHome}}
+                                        <v-text-field label="Odd Home" v-model="editedItem.result_odd.home"> 
+                                            {{editedItem.result_odd.home}}
                                         </v-text-field>
                                     </v-col>
                                     <v-col cols="12" sm="6" md="4">
-                                        <v-text-field label="Odd Tie" v-model="editedItem.oddTie"> 
-                                            {{editedItem.oddTie}}
+                                        <v-text-field label="Odd Tie" v-model="editedItem.result_odd.tie"> 
+                                            {{editedItem.result_odd.tie}}
                                         </v-text-field>
                                     </v-col>
                                     <v-col cols="12" sm="6" md="4">
-                                        <v-text-field label="Odd Away" v-model="editedItem.oddAway"> 
-                                            {{editedItem.oddAway}}
+                                        <v-text-field label="Odd Away" v-model="editedItem.result_odd.away"> 
+                                            {{editedItem.result_odd.away}}
                                         </v-text-field>
                                     </v-col>
                                     <v-col cols="12" sm="6" md="4">
-                                        <v-text-field label="Resultado Home" v-model="editedItem.resultTeam1"> 
-                                            {{editedItem.resultTeam1}}
+                                        <v-text-field label="Resultado Home" v-model="editedItem.result1"> 
+                                            {{editedItem.result1}}
                                         </v-text-field>
                                     </v-col>
                                     <v-col cols="2"></v-col>
                                     <v-col cols="12" sm="6" md="4">
-                                        <v-text-field label="Resultado Away" v-model="editedItem.resultTeam2"> 
-                                            {{editedItem.resultTeam2}}
+                                        <v-text-field label="Resultado Away" v-model="editedItem.result2"> 
+                                            {{editedItem.result2}}
                                         </v-text-field>
                                     </v-col>
                                     <v-col cols="12">
-                                        <v-select :items="estados" label="Estado da Aposta" :value="editedItem.estado"/>
+                                        <v-select label="Estado da Aposta" :items="estados" v-model="editedItem.state"/>
                                     </v-col>
                                 </v-row>
                             </v-container>
@@ -412,7 +415,7 @@ export default {
                 total_odd: '1',
                 bet_ammount: '',
                 ganhos: '',
-                state: 'Aberta',
+                state: 'Aberto',
                 date: new Date().toLocaleString()
             },
             userData:{
@@ -423,23 +426,28 @@ export default {
                     USD: '',
                     GBP: '',
                     ADA: ''
-                }
+                },
+                balance_history: [{}]
             }, 
             saldo: '',
             saldoFinal: '',
             erroSaldo: '',
             editedItem:{
-                oddHome:'',
-                oddTie:'',
-                oddAway:'',
+                _id: null,
+                result_odd:{
+                    home: '',
+                    tie: '',
+                    away: ''
+                },
                 sport:'',
                 team1:'',
                 team2:'',
-                resultTeam1:'',
-                resultTeam2:'',
-                estado:''
+                result1:'',
+                result2:'',
+                state:'',
+                winner: ''
             },
-            estados: ['A decorrer','Terminado'],
+            estados: ['Aberto','A decorrer','Terminado'],
             dialog: false,
             user_type:''
         }
@@ -459,6 +467,8 @@ export default {
                 this.userData.balance.USD = res.data.user.balance.USD
                 this.userData.balance.GBP = res.data.user.balance.GBP
                 this.userData.balance.ADA = res.data.user.balance.ADA
+                this.userData.balance_history = res.data.user.balance_history
+                console.log(this.userData.balance_history)
                 if(this.userData.currentCoin==='EUR'){
                     this.saldo=this.userData.balance.EUR
                     console.log(this.saldo)
@@ -493,35 +503,62 @@ export default {
 
         openEdit(event){
             console.log(event)
+            this.editedItem._id=event._id
             this.editedItem.team1=event.team1
             this.editedItem.team2=event.team2
             this.editedItem.sport=event.sport
-            this.editedItem.estado=event.estado
-            this.editedItem.oddHome=event.result_odd.home
-            this.editedItem.oddTie=event.result_odd.tie
-            this.editedItem.oddAway=event.result_odd.away
-            this.editedItem.resultTeam1=event.result1
-            this.editedItem.resultTeam2=event.result2
+            this.editedItem.state=event.state
+            this.editedItem.result_odd.home=event.result_odd.home
+            this.editedItem.result_odd.tie=event.result_odd.tie
+            this.editedItem.result_odd.away=event.result_odd.away
+            this.editedItem.result1=event.result1
+            this.editedItem.result2=event.result2
             this.dialog=true
         },
         close(){
+            this.editedItem._id=null,
             this.editedItem.team1='',
             this.editedItem.team2='',
             this.editedItem.sport='',
-            this.editedItem.estado='',
-            this.editedItem.oddHome='',
-            this.editedItem.oddTie='',
-            this.editedItem.oddAway='',
-            this.editedItem.resultTeam1='', 
-            this.editedItem.resultTeam2='',
+            this.editedItem.state='',
+            this.editedItem.result_odd.home='',
+            this.editedItem.result_odd.tie='',
+            this.editedItem.result_odd.away='',
+            this.editedItem.result1='', 
+            this.editedItem.result2='',
             this.dialog=false
 
         },
 
         save(){
+            if(this.editedItem.state=='Aberto'||this.editedItem.state=='A decorrer'){
+                axios.put(`http://localhost:8001/evento`, this.editedItem)
+                    .then((response)=>{
+                        console.log(response)
+                    },(error) =>{
+                        console.log(error);
+                });
+            }else{
+                /*axios.put(`http://localhost:8001/evento`, this.editedItem)
+                    .then((response)=>{
+                         console.log(response)
+                    },(error) =>{
+                        console.log(error);
+                });*/
+                let resultHome, resultAway
+                resultHome = parseInt(this.editedItem.result1)
+                resultAway = parseInt(this.editedItem.result2)
+                if(resultHome>resultAway){
+                    this.editedItem.winner = this.editedItem.team1
+                }else if(resultHome<resultAway){
+                    this.editedItem.winner = this.editedItem.team2
+                }else{
+                    this.editedItem.winner = 'Empate'
+                }
+            }
 
-            //buscar as cenas ao editedItem e fazer put e lógica toda da cena aqui
-            this.dialog=false
+            console.log(this.editedItem)
+            this.close()
         },
 
         deleteBoletim(){
@@ -579,9 +616,11 @@ export default {
                 this.betData.ganhos = (parseFloat(this.betData.bet_ammount)*parseFloat(this.betData.total_odd)).toFixed(2) + ' EUR'
             }
         },
+
         printGanhos(){
             console.log(this.ganhos)
         },
+
         pickDesporto(item){
             this.formData.sportType = item
             axios.get(`http://localhost:8001/evento`, {headers: {sportType: this.formData.sportType}})
@@ -591,6 +630,7 @@ export default {
                     console.log(error);
             });
         },
+
         addBoletim(item,odd,result){
             let e = {
                 _id: item._id,
@@ -600,14 +640,13 @@ export default {
                 estado: item.state,
                 odd: odd
             }
-            console.log(e._id)
             let repetido = false
 
             this.betData.events.forEach((obj)=>{
                 if(obj._id==e._id)
                     repetido = true
             })
-            console.log(repetido)
+
             
             if(!repetido){
                 if(this.isSimple){
@@ -622,9 +661,6 @@ export default {
 
             }else{
                 this.betData.type = 'Múltipla'
-                console.log(odd)
-                console.log(e.odd)
-                console.log(this.betData.total_odd)
                 this.betData.events.push(e)
 
                 this.betData.total_odd = (parseFloat(odd)*parseFloat(this.betData.total_odd || '1')).toFixed(2) 
@@ -662,22 +698,44 @@ export default {
             console.log(this.betData)
             axios.post(`http://localhost:8001/bet`, this.betData)
                 .then(function(response){
-                    if(this.userData.currentCoin==='EUR'){
-                        this.userData.balance.EUR = (parseFloat(this.userData.balance.EUR)-parseFloat(this.betData.bet_ammount)).toFixed(2)
-                    }
-                    if(this.userData.currentCoin==='USD'){
-                        this.userData.balance.USD = (parseFloat(this.userData.balance.USD)-parseFloat(this.betData.bet_ammount)).toFixed(2)
-                    }
-                    if(this.userData.currentCoin==='GBP'){
-                        this.userData.balance.GBP = (parseFloat(this.userData.balance.GBP)-parseFloat(this.betData.bet_ammount)).toFixed(2)
-                    }
-                    if(this.userData.currentCoin==='ADA'){
-                        this.userData.balance.ADA = (parseFloat(this.userData.balance.ADA)-parseFloat(this.betData.bet_ammount)).toFixed(2)
-                    }
                     console.log(response)
                 },(error) =>{
                     console.log(error);
-            }); 
+            });
+
+            if(this.userData.currentCoin==='EUR'){
+                this.userData.balance.EUR = (parseFloat(this.saldo)-parseFloat(this.betData.bet_ammount)).toFixed(2)
+                this.saldoFinal = this.userData.balance.EUR
+            }
+            if(this.userData.currentCoin==='USD'){
+                this.userData.balance.USD = (parseFloat(this.userData.balance.USD)-parseFloat(this.betData.bet_ammount)).toFixed(2)
+                this.saldoFinal = this.userData.balance.USD
+            }
+            if(this.userData.currentCoin==='GBP'){
+                this.userData.balance.GBP = (parseFloat(this.userData.balance.GBP)-parseFloat(this.betData.bet_ammount)).toFixed(2)
+                this.saldoFinal = this.userData.balance.GBP
+            }
+            if(this.userData.currentCoin==='ADA'){
+                this.userData.balance.ADA = (parseFloat(this.userData.balance.ADA)-parseFloat(this.betData.bet_ammount)).toFixed(2)
+                this.saldoFinal = this.userData.balance.ADA
+            }
+
+            let movimento ={
+                tipo: 'Aposta',
+                amountInicial: this.saldo + ' ' + this.userData.currentCoin,
+                amountFinal: 'N/a',
+                data: new Date().toLocaleString(),
+                saldo_final: this.userData.balance.EUR + ' ' + this.userData.currentCoin
+            }
+
+            this.userData.balance_history.push(movimento)
+
+            axios.put(`http://localhost:8001/user`, this.userData)
+                .then(function(response){
+                    console.log(response)
+                },(error) =>{
+                    console.log(error);
+            });
             location.reload()
         },
     },

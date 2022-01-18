@@ -154,7 +154,8 @@ export default {
               console.log(response)
             },(error) =>{
                 console.log(error);
-            }); 
+          }); 
+          this.$router.go()
       },
 
       login(){

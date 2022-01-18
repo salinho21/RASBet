@@ -27,21 +27,24 @@
                                 hide-details
                             ></v-text-field>
                         </v-card-title>
-                        <v-data-table :headers="headers" :items="bets" :search="search" :single-expand="singleExpand" :expanded.sync="expanded" item-key="_id" show-expand class="elevation-1 mt-5">
-                            <template v-slot:expanded-item="{ headers, item }">
-                                <tr :colspan="headers.length" v-for="(i,index) in bets" :key="i.type">
+                        <v-data-table :headers="headers" :items="bets" :search="search" single-expand :expanded.sync="expanded" item-key="_id" show-expand class="elevation-1 mt-5">
+                            <template v-slot:expanded-item="{ headers,item }">
+                                <tr :colspan="headers.length" v-for="i in bets.filter(bet=> !bet._id.indexOf(item._id))" :key="i.user_id">
+                                    <div v-for="a in i.events" :key="a.eventID">
                                         <p class="mt-5 ml-5">
-                                        <b>Desporto:</b> {{item.events[index].sport}} {{index}}
+                                        <b>Desporto:</b> {{a.sport}}
                                         <v-spacer class="ml-2"/> 
-                                        <b>Evento: </b> {{item.events[index].evento}}
+                                        <b>Evento: </b> {{a.evento}}
                                         <v-spacer class="ml-2"/> 
-                                        <b>Aposta Em: </b> {{item.events[index].aposta}}
+                                        <b>Aposta Em: </b> {{a.aposta}}
                                         <v-spacer class="ml-2"/> 
-                                        <b>Estado: </b> {{item.events[index].estado}}
+                                        <b>Estado: </b> {{a.estado}}
                                         <v-spacer class="ml-2"/> 
-                                        <b>Odd:</b> {{item.events[index].odd}}
-                                        
-                                    </p>                          
+                                        <b>Odd:</b> {{a.odd}}
+
+
+                                    </p> 
+                                    </div>
                                 </tr>
                             </template>
                         </v-data-table>

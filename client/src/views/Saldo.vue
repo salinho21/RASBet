@@ -401,8 +401,9 @@ export default {
                         data: new Date().toLocaleString(),
                         saldo_final: this.formData.balance.EUR + ' EUR'
                     }
+                    console.log(movimento)
                     
-                    this.formData.balance_history.push(movimento)
+                   /* this.formData.balance_history.push(movimento)*/
 
                     axios.put(`http://localhost:8001/user`, this.formData)
                         .then(function(response){

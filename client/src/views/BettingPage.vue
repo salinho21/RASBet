@@ -19,7 +19,7 @@
                                 <v-icon>{{ item.icon }}</v-icon>
                             </v-list-item-icon>
                             <v-list-item-content>
-                                <v-list-item-title @click="printDesporto(item.nome)"><h3>{{ item.nome }}</h3></v-list-item-title>
+                                <v-list-item-title @click="pickDesporto(item.nome)"><h3>{{ item.nome }}</h3></v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
                     </v-list>
@@ -37,38 +37,38 @@
                     </v-card>
                 </v-row>
 
-                <v-card v-for="item in items" :key="item.message">
-                    <v-row>
+                <v-card v-for="event in events" :key="event.sport" class="mb-5">
+                    <v-row no-gutters>
                         <v-col cols="12">
                             <v-card-title class="white--text cardtitle">
                                 <v-icon class="mr-1" color="white">mdi-soccer</v-icon>
-                                <h6>{{item.message}}</h6>
+                                <h6>{{event.team1}} x {{event.team2}}</h6>
                             </v-card-title>
                         </v-col>
                     </v-row>
                     <v-row no-gutters>
                         <v-col cols="5">
-                            <h3 class="pt-5 pl-5">Real Madrid x Barcelona</h3>  
+                            <h3 class="pt-5 pl-5">{{event.team1}} x {{event.team2}}</h3>  
                         </v-col>
                         <v-col cols="2" align="center">
-                            <h4 class="mt-7">Real Madrid</h4>
+                            <h4 class="mt-7">{{event.team1}}</h4>
                         </v-col>
                         <v-col cols="2" align="center">
                            <h4 class="mt-7">Empate</h4> 
                         </v-col>
                         <v-col cols="2" align="center">
-                            <h4 class="mt-7" >Barcelona</h4>
+                            <h4 class="mt-7" >{{event.team2}}</h4>
                         </v-col>
                     </v-row>
                     <v-row no-gutters>
                         <v-col cols="5">
-                            <h4 class="pt-5 pl-10">17/02 - 17:00</h4>
+                            <h4 class="pt-5 pl-10">{{event.date}}</h4>
                         </v-col>
                         <v-col cols="2" align="center">
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }"> 
-                                    <v-btn v-bind="attrs" v-on="on" class="mt-3 white--text" color="indigo darken-4" dense>
-                                        <h3 color="white--text "> 1.2</h3> 
+                                    <v-btn v-bind="attrs" v-on="on" class="mt-3 white--text" width="100px" color="indigo darken-4" dense @click="addBoletim(event)">
+                                        <h3 color="white--text "> {{event.result_odd.home}}</h3> 
                                     </v-btn>                   
                                 </template>
                                 <span>Home Team</span>
@@ -77,8 +77,8 @@
                         <v-col cols="2" align="center">
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }"> 
-                                    <v-btn v-bind="attrs" v-on="on" class="mt-3 mb-4 white--text" color="indigo darken-4" dense>
-                                        <h3>1.82</h3>
+                                    <v-btn v-bind="attrs" v-on="on" class="mt-3 mb-4 white--text" width="100px" color="indigo darken-4" dense @click="addBoletim(event)">
+                                        <h3>{{event.result_odd.tie}}</h3>
                                     </v-btn>                   
                                 </template>
                                 <span>Draw</span>
@@ -87,20 +87,21 @@
                         <v-col cols="2" align="center">
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }"> 
-                                    <v-btn v-bind="attrs" v-on="on" class="mt-3 white--text" color="indigo darken-4" dense>
-                                        <h3>3.35</h3>
+                                    <v-btn v-bind="attrs" v-on="on" class="mt-3 white--text" width="100px" color="indigo darken-4" dense @click="addBoletim(event)">
+                                        <h3>{{event.result_odd.away}}</h3>
                                     </v-btn>                   
                                 </template>
                                 <span>Away Team</span>
                             </v-tooltip>
                         </v-col >
-                    </v-row>           
+                    </v-row>          
                 </v-card>
             </v-col>
 
             <!-- Boletim-->
             <v-col cols="3" class="mt-2">
                 <v-row>
+                   <!--1º Card-->
                    <v-card class="ml-14 sticky-card1" width="350" height="90" outlined>
                         <v-row>
                             <v-col cols="1">
@@ -144,9 +145,33 @@
                         </v-row>       
                     </v-card>
                 </v-row>  
+                <!--2º Card-->
                 <v-row>
-                    <v-card class="mx-auto sticky-card2" max-width="350" height="590" outlined>
-                        <v-list-item three-line>
+                    <v-col>
+                        <v-card class="mx-auto sticky-card2" width="350" height="590" outlined>
+                        <v-card v-for="aposta in apostas" :key="aposta.sport" class="ml-2 mr-2 mt-1 mb-5">
+                            <v-row no-gutters class="">
+                                <v-col cols="12">
+                                     <span class="ml-2 grey--text">{{aposta.team1}} x {{aposta.team2}}</span>
+                                </v-col>
+                                <v-col cols="12">
+                                    <p class="ml-2"><b>Vitória: {{aposta.team1}} x {{aposta.team2}}</b> </p> 
+                                </v-col>
+                                <v-row no-gutters>
+                                    <v-col cols="7">
+                                        <span class="ml-2">Odd: <b>{{aposta.result_odd.home}}</b></span>
+                                        <span class="ml-2">Ganhos: <b>{{aposta.result_odd.home}}</b></span>
+                                    </v-col>
+                                    <v-col cols="4">
+                                        <v-text-field class="" label="Montante"></v-text-field>
+                                    </v-col>
+                                </v-row>
+                                
+                                  
+                            </v-row>
+                                
+                        </v-card>
+                        <!--<v-list-item three-line>
                             <v-list-item-content>
                                 <div class="text-overline mb-4">
                                 OVERLINE
@@ -162,10 +187,13 @@
                             <v-btn outlined rounded text>
                                 Button
                             </v-btn>
-                        </v-card-actions>
+                        </v-card-actions>-->
                     </v-card>
+                    </v-col>
+                    
                 </v-row>
                 <!--Aposta Multipla-->
+                <!--3º Card-->
                 <v-row v-if="isMultiple"> 
                     <v-card class="mx-auto sticky-card3" width="350" height="150" outlined>
                         <v-row no-gutters class="mt-3">
@@ -265,13 +293,16 @@ export default {
                 {nome: 'Snooker', icon: 'mdi-billiards-rack'}
             ],
             events: [],
-            aposta: [],
+            apostas: [],
             isSimple: true,
             isMultiple: true,
             montante: '',
             ganhos: '',
             totalOdd: '3.25',
-            sportType: ''
+            formData:{
+                sportType: 'Futebol'
+            }
+            
 
         }
     },
@@ -279,15 +310,15 @@ export default {
         if(localStorage.getItem('token')===null){
             this.$router.push('/authentication')
         }
-        axios.get(`http://localhost:8001/events`)
+
+        axios.get(`http://localhost:8001/evento`, {headers: {sportType: this.formData.sportType}})
             .then((response)=>{
-                response.data.forEach((obj) =>{
-                this.events.push(obj)
-                });
+                this.events = response.data.events
+                console.log(this.events)
             },(error) =>{
                 console.log(error);
         });
-        console.log(this.events)
+
     },
     mounted(){
         axios.get('http://localhost:8001/user', {headers: {token: localStorage.get('token')}})
@@ -326,8 +357,19 @@ export default {
         printGanhos(){
             console.log(this.ganhos)
         },
-        printDesporto(item){
+        pickDesporto(item){
+            this.formData.sportType = item
+            axios.get(`http://localhost:8001/evento`, {headers: {sportType: this.formData.sportType}})
+                .then((res)=>{
+                    this.events = res.data.events
+                },(error) =>{
+                    console.log(error);
+            });
+        },
+        addBoletim(item){
             console.log(item)
+            this.apostas.push(item)
+            console.log(this.apostas)
         }
     },
 }
@@ -384,6 +426,7 @@ export default {
 .ganhos {
   padding-left: 139px;
 }
+
 
 
 </style>

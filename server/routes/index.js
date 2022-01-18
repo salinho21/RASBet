@@ -6,6 +6,7 @@ const Bet = require('../controllers/betController')
 const Event = require('../controllers/eventController')
 const User = require('../controllers/userController')
 const UserModel = require('../models/user')
+const EventModel = require('../models/event')
 const BetModel = require('../models/bet')
 const jwt = require('jsonwebtoken')
 
@@ -133,10 +134,21 @@ router.post('/evento', function(req, res){
 
 
 // Listar todas os dominios
-router.get('/events', function(req, res) {
+/*router.get('/events', function(req, res) {
   Event.listar()
     .then(dados => res.status(200).jsonp(dados) )
     .catch(e => res.status(500).jsonp({error: e}))
+});*/
+
+router.get('/evento', function(req, res) {
+  let sportType = req.headers.sporttype
+  EventModel.find({ sport: sportType}, (error, event) => {
+    if (error) return console.log(error)
+    return res.status(200).json({
+      title: 'Events by Sport Grabbed',
+      events: event
+    })
+  })
 });
 
 // GET em Bet

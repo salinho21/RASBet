@@ -13,6 +13,10 @@ var eventSchema = new mongoose.Schema(
             tie: String, 
             away: String 
         },
+        date: String,
+        result1: String,
+        result2: String,
+        winner: String, 
         state: String
   });
 

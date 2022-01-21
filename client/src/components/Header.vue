@@ -58,15 +58,33 @@
             <span>Apostas</span>
         </v-tooltip>
 
-        <v-btn v-if="logged"
-          class="mx-4"
-          dark
-          icon
-        >
-          <v-icon size="28px">
-            mdi-bell
-          </v-icon>
-        </v-btn>
+        <v-menu v-if="logged" :rounded="rounded"
+      offset-y>
+            <template v-slot:activator="{ on: menu }">
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on: tooltip }">
+                        <v-btn dark icon class="mr-4"
+                        v-on="{ ...tooltip, ...menu }"
+                        >
+                            <v-icon >
+                                mdi-bell
+                            </v-icon>
+                        </v-btn>
+                    </template>
+                    <span>
+
+                    </span>
+                </v-tooltip>
+            </template>
+            <v-list>
+                <v-list-item >                 
+                        {{notificacoes}}              
+                </v-list-item>
+               
+            </v-list>
+        </v-menu>
+
+        
 
         <v-tooltip v-if="!logged" bottom>
             <template v-slot:activator="{ on, attrs }">    
@@ -85,6 +103,8 @@
             </template>
             <span>Registar Utilizador</span>
         </v-tooltip>
+
+        
 
         <v-menu v-if="logged" :rounded="rounded"
       offset-y>
@@ -160,7 +180,8 @@ export default {
             coinType: '',
             finalBalance: '',
             user_type: '',
-            name: ''
+            name: '',
+            notificacoes: ''
         }
     },
     created(){
@@ -185,6 +206,7 @@ export default {
                 console.log(res.data)
                 this.user_type= res.data.user.user_type
                 this.name = res.data.user.name
+                this.notificacoes = res.data.user.notificacoes
                 
         })      
     },

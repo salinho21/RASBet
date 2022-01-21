@@ -31,8 +31,14 @@
                 <v-row no-gutters>
                     <v-card width="1000" class="mb-4" >
                         <v-card-title>
-                            <v-icon >mdi-soccer</v-icon>
-                            <h6>Futebol</h6>
+                            <h6 v-if="formData.sportType=='Futebol'" class="ml-2"><v-icon class="mr-2">mdi-soccer</v-icon>{{formData.sportType}}</h6>
+                            <h6 v-if="formData.sportType=='Basquetebol'" class="ml-2"><v-icon class="mr-2">mdi-basketball</v-icon>{{formData.sportType}}</h6>
+                            <h6 v-if="formData.sportType=='Hóquei no Gelo'" class="ml-2"><v-icon class="mr-2">mdi-hockey-sticks</v-icon>{{formData.sportType}}</h6>
+                            <h6 v-if="formData.sportType=='Andebol'" class="ml-2"><v-icon class="mr-2">mdi-handball</v-icon>{{formData.sportType}}</h6>
+                            <h6 v-if="formData.sportType=='Ténis'" class="ml-2"><v-icon class="mr-2">mdi-tennis-ball</v-icon>{{formData.sportType}}</h6>
+                            <h6 v-if="formData.sportType=='Voleibol'" class="ml-2"><v-icon class="mr-2">mdi-volleyball</v-icon>{{formData.sportType}}</h6>
+                            <h6 v-if="formData.sportType=='MMA'" class="ml-2"><v-icon class="mr-2">mdi-mixed-martial-arts</v-icon>{{formData.sportType}}</h6>
+                            <h6 v-if="formData.sportType=='Snooker'" class="ml-2"><v-icon class="mr-2">mdi-billiards-rack</v-icon>{{formData.sportType}}</h6>
                         </v-card-title>              
                     </v-card>
                 </v-row>
@@ -53,7 +59,10 @@
                         <v-col cols="2" align="center">
                             <h4 class="mt-7">{{event.team1}}</h4>
                         </v-col>
-                        <v-col cols="2" align="center">
+                        <v-col v-if="event.result_odd.tie=='0'" cols="1" align="center">
+                           
+                        </v-col>
+                        <v-col v-if="event.result_odd.tie!='0'" cols="2" align="center">
                            <h4 class="mt-7">Empate</h4> 
                         </v-col>
                         <v-col cols="2" align="center">
@@ -67,6 +76,7 @@
                         <v-col cols="3">
                             <h4 class="pt-5 pl-10">Estado: {{event.state}}</h4>
                         </v-col>
+                        
                         <v-col cols="2" align="center">
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }"> 
@@ -77,10 +87,12 @@
                                 <span>Home Team</span>
                             </v-tooltip>
                         </v-col>
-                        <v-col cols="2" align="center">
+                        <v-col v-if="event.result_odd.tie=='0'" cols="1" align="center">
+                        </v-col>  
+                        <v-col v-if="event.result_odd.tie!='0'" cols="2" align="center">
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }"> 
-                                    <v-btn v-bind="attrs" v-on="on" class="mt-3 mb-4 white--text" width="100px" color="indigo darken-4" dense @click="addBoletim(event,event.result_odd.tie,'Empate')">
+                                    <v-btn  v-bind="attrs" v-on="on" class="mt-3 mb-4 white--text" width="100px" color="indigo darken-4" dense @click="addBoletim(event,event.result_odd.tie,'Empate')">
                                         <h3>{{event.result_odd.tie}}</h3>
                                     </v-btn>                   
                                 </template>
@@ -90,7 +102,7 @@
                         <v-col cols="2" align="center">
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }"> 
-                                    <v-btn v-bind="attrs" v-on="on" class="mt-3 white--text" width="100px" color="indigo darken-4" dense @click="addBoletim(event,event.result_odd.away,event.team2)">
+                                    <v-btn v-bind="attrs" v-on="on" class="mt-3 white--text mb-5 ml" width="100px" color="indigo darken-4" dense @click="addBoletim(event,event.result_odd.away,event.team2)">
                                         <h3>{{event.result_odd.away}}</h3>
                                     </v-btn>                   
                                 </template>
@@ -161,7 +173,7 @@
                     <v-col>
                         <!-- Simples -->
                         <v-card v-if="isSimple" class="mx-auto sticky-card2" width="350" height="590" outlined>
-                            <v-card v-for="aposta in betData.events" :key="aposta.sport" elevation="6" class="ml-2 mr-2 mt-1 mb-2">
+                            <v-card v-for="aposta in betData.events" :key="aposta.sport" elevation="6" class="mb-2">
                                 <v-row no-gutters class="">
                                     <v-col cols="12">
                                         <span class="ml-2 grey--text">{{aposta.evento}}</span>
@@ -171,7 +183,7 @@
                                     </v-col>
                                     <v-row no-gutters>
                                         <v-col cols="6">
-                                            <v-text-field v-model="betData.bet_ammount" dense rounded label="Montante" class="mr-5 ml-1" @input="updateGanhosSimples"  />
+                                            <v-text-field v-model="betData.bet_ammount" dense rounded solo-inverted label="Montante" class="mr-5 ml-5" @input="updateGanhosSimples"  />
                                         </v-col>
                                         <v-col cols="6">
                                             <b class="mt-5 ml-2">Odd Total</b> <span class="ml-5">{{aposta.odd}}</span> 
@@ -184,7 +196,7 @@
                         </v-card>
                         <!-- Multipla -->
                         <v-card v-if="isMultiple" class="mx-auto sticky-card2" width="350" height="590" outlined >
-                            <v-card v-for="aposta in betData.events" :key="aposta.sport" elevation="6" class="ml-2 mr-2 mt-1 mb-2">
+                            <v-card v-for="aposta in betData.events" :key="aposta.sport" elevation="6" class="mb-1">
                                 <v-row no-gutters class="">
                                     <v-col cols="12">
                                         <span class="ml-2 grey--text">{{aposta.evento}}</span>
@@ -208,7 +220,7 @@
                     <v-card class="mx-auto sticky-card3" width="350" height="150" outlined>
                         <v-row no-gutters class="mt-3">
                             <v-col cols="6">
-                                <v-text-field v-model="betData.bet_ammount" filled dense rounded label="Montante" class="mr-5 ml-1" @input="updateGanhos"  />
+                                <v-text-field v-model="betData.bet_ammount" filled solo-inverted dense rounded label="Montante" class="mr-5 ml-5" @input="updateGanhos"  />
                             </v-col>
                             <v-col cols="6">
                                 <b class="mt-5 ml-2">Odd Total</b> <span class="ml-5">{{betData.total_odd}}</span> 
@@ -217,7 +229,7 @@
                             </v-col>
                         </v-row>
                         <v-row no-gutters class="mb-5">
-                            <span class="ex">{{erroSaldo}}</span>
+                            
                             <v-col cols="12">
                                 <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">    
@@ -228,6 +240,7 @@
                                 <span>Efetuar Aposta</span>
                             </v-tooltip>
                             </v-col>
+                            <span class="ex ml-6 mt-1">{{erroSaldo}}</span>
                         </v-row>
                     </v-card>
                 </v-row>
@@ -449,7 +462,11 @@ export default {
             },
             estados: ['Aberto','A decorrer','Terminado'],
             dialog: false,
-            user_type:''
+            user_type:'',
+            bets: [], //Contem todas as bets do Sistema que estejam abertas
+            betsEditadas: [],
+            users: [], //Contem todos os users do Sistema
+            usersEditados: []
         }
     },
     created(){
@@ -468,10 +485,8 @@ export default {
                 this.userData.balance.GBP = res.data.user.balance.GBP
                 this.userData.balance.ADA = res.data.user.balance.ADA
                 this.userData.balance_history = res.data.user.balance_history
-                console.log(this.userData.balance_history)
                 if(this.userData.currentCoin==='EUR'){
                     this.saldo=this.userData.balance.EUR
-                    console.log(this.saldo)
                 }
                 if(this.userData.currentCoin==='USD'){
                     this.saldo=this.userData.balance.USD
@@ -488,10 +503,24 @@ export default {
         axios.get(`http://localhost:8001/evento`, {headers: {sportType: this.formData.sportType}})
             .then((response)=>{
                 this.events = response.data.events
-                console.log(this.events)
             },(error) =>{
                 console.log(error);
         });
+
+        axios.get('http://localhost:8001/allBets', {headers: {state: 'Aberto'}})
+            .then(res => { 
+                this.bets = res.data.bets
+            },(error) =>{
+                console.log(error);
+        })    
+
+        axios.get('http://localhost:8001/allUsers', {headers: {user_type: 'User'}})
+            .then(res => { 
+                this.users = res.data.users
+            },(error) =>{
+                console.log(error);
+        }) 
+
 
     },
     
@@ -504,15 +533,17 @@ export default {
         openEdit(event){
             console.log(event)
             this.editedItem._id=event._id
+            this.editedItem.sport=event.sport
             this.editedItem.team1=event.team1
             this.editedItem.team2=event.team2
-            this.editedItem.sport=event.sport
-            this.editedItem.state=event.state
             this.editedItem.result_odd.home=event.result_odd.home
             this.editedItem.result_odd.tie=event.result_odd.tie
             this.editedItem.result_odd.away=event.result_odd.away
+            this.editedItem.data
             this.editedItem.result1=event.result1
             this.editedItem.result2=event.result2
+            this.editedItem.winner= ''
+            this.editedItem.state=event.state
             this.dialog=true
         },
         close(){
@@ -539,12 +570,7 @@ export default {
                         console.log(error);
                 });
             }else{
-                /*axios.put(`http://localhost:8001/evento`, this.editedItem)
-                    .then((response)=>{
-                         console.log(response)
-                    },(error) =>{
-                        console.log(error);
-                });*/
+
                 let resultHome, resultAway
                 resultHome = parseInt(this.editedItem.result1)
                 resultAway = parseInt(this.editedItem.result2)
@@ -555,10 +581,99 @@ export default {
                 }else{
                     this.editedItem.winner = 'Empate'
                 }
-            }
 
-            console.log(this.editedItem)
-            this.close()
+                this.bets.forEach((obj) =>{ //Percorrer cada bet
+                    let countAbertas = 0 
+                    let apostaPerdida = false   
+                    let editada = false                 		 		//Contar quantos eventos tem estado "Aberto"
+                    obj.events.forEach((o) => {
+                        if(o.estado=='Aberto'){
+                            countAbertas++            				        //Se evento tem estado "Aberto", incrementa
+                        }
+                        
+                        if(this.editedItem._id==o._id){   				    //Se evento corresponder ao evento que acabou de ser editado, 
+                            if(o.aposta!=this.editedItem.winner){
+                                apostaPerdida = true
+                                o.estado = 'Terminado' 
+                                obj.state = 'Aposta Perdida'
+                                editada = true
+                            }else{
+                                o.estado = 'Terminado'    				//passar estado a terminado, decrementar e inserir bet 
+                                countAbertas--  
+                                editada = true       				    //em novo array para se fazer posteriormente o PUT em bet
+                            }
+                        }
+                        if(apostaPerdida){
+                            o.estado = 'Terminado'
+                        }
+                    })
+                    
+                    if(countAbertas==0 && !apostaPerdida){              
+                        obj.state = 'Aposta Ganha'
+                        
+                        this.users.forEach((u)=>{
+                            if(u._id == obj.user_id){
+                                const myArray = obj.ganhos.split(" ");
+                                let valor = myArray[0]
+                                let moeda = myArray[1]
+                                let amountFinal
+                                if(moeda == 'EUR'){        
+                                    u.balance.EUR = (parseFloat(u.balance.EUR)+parseFloat(valor)).toFixed(2)
+                                    amountFinal = u.balance.EUR + ' EUR'
+                                }
+                                if(moeda == 'USD'){
+                                    u.balance.USD = (parseFloat(u.balance.USD)+parseFloat(valor)).toFixed(2)
+                                    amountFinal = u.balance.USD + ' USD'
+                                }
+                                if(moeda == 'GBP'){
+                                    u.balance.GBP = (parseFloat(u.balance.GBP)+parseFloat(valor)).toFixed(2)
+                                    amountFinal = u.balance.GBP + ' GBP'
+                                }
+                                if(moeda == 'ADA'){
+                                    u.balance.ADA = (parseFloat(u.balance.ADA)+parseFloat(valor)).toFixed(2)
+                                    amountFinal = u.balance.ADA + ' ADA'
+                                }
+                                let movimento = {
+                                    tipo: 'Aposta Ganha',
+                                    amountInicial: obj.ganhos,
+                                    amountFinal: 'N/a',
+                                    data: new Date().toLocaleString(),
+                                    saldo_final: amountFinal
+                                }
+                                u.balance_history.push(movimento)
+                                console.log(movimento)
+                                this.usersEditados.push(u)
+                            }
+                        })
+                        editada = true             
+                    }
+                    if(editada){
+                        this.betsEditadas.push(obj)
+                    }
+                })
+
+                axios.put(`http://localhost:8001/evento`, this.editedItem)
+                    .then((response)=>{
+                        console.log(response)
+                    },(error) =>{
+                        console.log(error);
+                });
+
+                axios.put(`http://localhost:8001/betsEditadas`, this.betsEditadas)
+                    .then((response)=>{
+                        console.log(response)
+                    },(error) =>{
+                        console.log(error);
+                });
+
+                axios.put(`http://localhost:8001/usersEditados`, this.usersEditados)
+                    .then((response)=>{
+                        console.log(response)
+                    },(error) =>{
+                        console.log(error);
+                });
+        }
+
         },
 
         deleteBoletim(){
@@ -617,12 +732,9 @@ export default {
             }
         },
 
-        printGanhos(){
-            console.log(this.ganhos)
-        },
-
         pickDesporto(item){
             this.formData.sportType = item
+
             axios.get(`http://localhost:8001/evento`, {headers: {sportType: this.formData.sportType}})
                 .then((res)=>{
                     this.events = res.data.events
@@ -647,7 +759,6 @@ export default {
                     repetido = true
             })
 
-            
             if(!repetido){
                 if(this.isSimple){
                 this.betData.ganhos = ''
@@ -662,11 +773,9 @@ export default {
             }else{
                 this.betData.type = 'Múltipla'
                 this.betData.events.push(e)
-
                 this.betData.total_odd = (parseFloat(odd)*parseFloat(this.betData.total_odd || '1')).toFixed(2) 
-
             }
-            }
+        }
                     
         },
         clearBoletim(){

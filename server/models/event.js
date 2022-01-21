@@ -3,9 +3,7 @@ const mongoose = require('mongoose')
 var eventSchema = new mongoose.Schema(
   
     {
-        id: String,
-        sport: String, 
-        type: String, 
+        sport: String,
         team1: String, 
         team2: String, 
         result_odd: { 

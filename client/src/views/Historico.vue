@@ -31,19 +31,17 @@
                             <template v-slot:expanded-item="{ headers,item }">
                                 <tr :colspan="headers.length" v-for="i in bets.filter(bet=> !bet._id.indexOf(item._id))" :key="i.user_id">
                                     <div v-for="a in i.events" :key="a.eventID">
-                                        <p class="mt-5 ml-5">
-                                        <b>Desporto:</b> {{a.sport}}
-                                        <v-spacer class="ml-2"/> 
-                                        <b>Evento: </b> {{a.evento}}
-                                        <v-spacer class="ml-2"/> 
-                                        <b>Aposta Em: </b> {{a.aposta}}
-                                        <v-spacer class="ml-2"/> 
-                                        <b>Estado: </b> {{a.estado}}
-                                        <v-spacer class="ml-2"/> 
-                                        <b>Odd:</b> {{a.odd}}
-
-
-                                    </p> 
+                                        <p class="mt-5 ml-7 ">
+                                            <b>Desporto:</b> {{a.sport}}
+                                            <v-spacer class="ml-2"/> 
+                                            <b>Evento: </b> {{a.evento}}
+                                            <v-spacer class="ml-2"/> 
+                                            <b>Aposta Em: </b> {{a.aposta}}
+                                            <v-spacer class="ml-2"/> 
+                                            <b>Estado: </b> {{a.estado}}
+                                            <v-spacer class="ml-2"/> 
+                                            <b>Odd:</b> {{a.odd}}
+                                        </p> 
                                     </div>
                                 </tr>
                             </template>

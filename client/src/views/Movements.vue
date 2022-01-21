@@ -35,6 +35,7 @@
                                     <p class="mt-5" v-if="item.tipo=='Depósito'">Valor de Depósito: {{item.amountInicial}} <v-spacer class="mt-1"/> Saldo Final: {{item.saldo_final}}</p>
                                     <p class="mt-5" v-if="item.tipo=='Conversão'">Valor a Converter: {{item.amountInicial}} <v-spacer class="mt-1"/> Valor Obtido: {{item.amountFinal}} <v-spacer class="mt-1"/> Saldos Após Conversão: {{item.saldo_final}}</p>
                                     <p class="mt-5" v-if="item.tipo=='Aposta'">Saldo Inicial: {{item.amountInicial}} <v-spacer class="mt-1"/> Saldo Final: {{item.saldo_final}}</p>
+                                    <p class="mt-5" v-if="item.tipo=='Aposta Ganha'">Ganhos de Aposta: {{item.amountInicial}} <v-spacer class="mt-1"/> Saldo Final: {{item.saldo_final}}</p>
                                 </td>
                                 </template>
                                 

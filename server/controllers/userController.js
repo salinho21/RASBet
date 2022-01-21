@@ -27,3 +27,7 @@ module.exports.remover = function(id){
 module.exports.alterar = function(q){
     return User.findByIdAndUpdate({_id: q._id}, q, {new: true})
 }
+
+module.exports.updateMany = function(arr){
+    return Promise.all(arr.map(d => User.findByIdAndUpdate(d._id, d, {new: true})))
+}

@@ -110,10 +110,10 @@
                         <v-avatar class="mr-3">
                                 <v-img src="../assets/defaultuser.jpg"/>
                         </v-avatar>   
-                        <h4>João Amorim</h4> 
+                        <h4>{{name}}</h4> 
     
                 </v-list-item>
-                <v-list-item v-if="user_type=='Admin'" link :to="admin">                 
+                <v-list-item v-if="user_type=='Admin'" link :to="'/admin'">                 
                         <v-icon class="mr-2">mdi-plus</v-icon>   
                          <v-list-item-title> Inserir Evento</v-list-item-title>              
                 </v-list-item>
@@ -159,7 +159,8 @@ export default {
             },
             coinType: '',
             finalBalance: '',
-            user_type: ''
+            user_type: '',
+            name: ''
         }
     },
     created(){
@@ -183,6 +184,7 @@ export default {
                 }
                 console.log(res.data)
                 this.user_type= res.data.user.user_type
+                this.name = res.data.user.name
                 
         })      
     },

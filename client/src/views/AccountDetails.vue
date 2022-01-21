@@ -88,7 +88,7 @@
                                     <v-row>
                                         <v-col cols="9">
                                             <h4 class="ml-10 mt-7">Password Actual:</h4>
-                                            <v-text-field v-model="passwordData.oldPassword" class="ml-10 mt-3" filled :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="[rules.required, rules.min]"
+                                            <v-text-field v-model="passwordData.oldPassword" class="ml-10 mt-3" filled :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="[rules.required]"
                                                 :type="show1 ? 'text' : 'password'" hint="At least 8 characters" counter @click:append="show1 = !show1"/>
                                         </v-col>
                                     </v-row>
@@ -258,7 +258,7 @@ export default {
             rules: {
                 required: [(v) => !!v || "Field is required"],
                 email: [v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'],
-                min: v => v.length >= 4 || 'Min 8 characters',
+                min: v => v.length >= 8 || 'Min 8 characters',
             }
         }
     },
@@ -315,16 +315,13 @@ export default {
         },
         changePassword(){
            if(this.$refs.form2.validate()){
-
                 axios.put(`http://localhost:8001/user`, this.passwordData)
                     .then(function(response){
                         console.log(response)
-                        
+                        this.openConfirmSubmit = true
                     },(error) =>{
                         console.log(error);
                 });
-                this.openPassword = false
-                this.openConfirmSubmit = true
                 
            }else{
                this.showError = true

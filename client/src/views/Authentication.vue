@@ -21,8 +21,8 @@
                             width="150px">                        
                             </v-img>
                         </div>
-                        <h4 class="text-center mt-4">Ensure your email for registration</h4>
-                        <v-form>
+                        <h4 class="text-center mt-4">Efetuar Autenticação. Inserir email e password.</h4>
+                        <v-form v-model="valid" ref="form1">
                           <v-text-field
                             v-model="email"
                             label="Email"
@@ -39,7 +39,6 @@
                             color="indigo darken-4"
                           />
                         </v-form>
-                        <h3 class="text-center mt-4">Forgot your password?</h3>
                       </v-card-text>
                       <div class="text-center mt-3 mb-4">
                         <v-btn @click="login" rounded color="indigo darken-4" dark>SIGN IN</v-btn>
@@ -50,7 +49,7 @@
                         <h1 class="text-center display-1">Hello, Friend!</h1>
                         <h5
                           class="text-center"
-                        >Enter your personal details and start this journey with us</h5>
+                        >Ainda não possuí uma conta? Efetue o seu registo aqui.</h5>
                       </v-card-text>
                       <div class="text-center">
                         <v-btn rounded outlined dark @click="step++">SIGN UP</v-btn>
@@ -65,7 +64,7 @@
                         <h1 class="text-center display-1">Welcome Back!</h1>
                         <h5
                           class="text-center"
-                        >To Keep connected with us, please login with your personnel info</h5>
+                        >Se já possuí uma conta, efetue a autenticação aqui!</h5>
                       </v-card-text>
                       <div class="text-center">
                         <v-btn rounded outlined dark @click="step--">Sign in</v-btn>
@@ -83,14 +82,16 @@
                             width="150px">                        
                             </v-img>
                         </div>
-                        <h4 class="text-center mt-4">Ensure your email for registration</h4>
-                        <v-form>
+                        <h4 class="text-center mt-4">Efetuar registo. Inserir nome, email e password.</h4>
+                        <h4 class="red--text" v-if="showError">Erro no registo. Por favor verifique os campos e tente novamente!</h4>
+                        <v-form v-model="valid" ref="form2">
                           <v-text-field
                             v-model="name"
                             label="Name"
                             prepend-icon="person"
                             type="text"
                             color="indigo darken-4"
+                            :rules="rules.required"
                           />
                           <v-text-field
                             v-model="email"
@@ -98,6 +99,7 @@
                             prepend-icon="email"
                             type="text"
                             color="indigo darken-4"
+                            :rules="rules.email"
                           />
 
                           <v-text-field
@@ -106,6 +108,7 @@
                             prepend-icon="lock"
                             type="password"
                             color="indigo darken-4"
+                            :rules="[rules.required,rules.min]"
                           />
                         </v-form>
                       </v-card-text>
@@ -138,24 +141,35 @@ export default {
           name: '',
           email: '',
           password: '',
-          step: 1
+          showError: false,
+          step: 1,
+          rules: {
+                required: [(v) => !!v || "Field is required"],
+                email: [v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'],
+                min: v => v.length >= 8 || 'Min 8 characters',
+            }
       }
     
   },
   methods: {
       register(){
-          let newUser = {
-              name: this.name,
-              email: this.email,
-              password: this.password
-          }
-          axios.post(`http://localhost:8001/user`, newUser)
-            .then(function(response){
-              console.log(response)
-            },(error) =>{
-                console.log(error);
-          }); 
-          this.$router.go()
+          if(this.$refs.form2.validate()){
+                let newUser = {
+                    name: this.name,
+                    email: this.email,
+                    password: this.password
+                }
+                axios.post(`http://localhost:8001/user`, newUser)
+                  .then(function(response){
+                    console.log(response)
+                  },(error) =>{
+                      console.log(error);
+                }); 
+                this.$router.go()
+           }else{
+               this.showError = true
+               console.log('Campos Inválidos!')
+           }
       },
 
       login(){

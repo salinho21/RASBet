@@ -27,3 +27,7 @@ module.exports.remover = function(id){
 module.exports.alterar = function(d){
     return Bet.findByIdAndUpdate({_id: d._id}, d, {new: true})
 }
+
+module.exports.updateMany = function(arr){
+    return Promise.all(arr.map(d => Bet.findByIdAndUpdate(d._id, d, {new: true})))
+}

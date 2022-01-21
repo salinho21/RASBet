@@ -10,6 +10,8 @@ const EventModel = require('../models/event')
 const BetModel = require('../models/bet')
 const jwt = require('jsonwebtoken')
 
+// -------------------------- User ------------------------------
+
 // GET em Utilizador
 router.get('/user', (req, res, next) => {
   let token = req.headers.token;
@@ -35,13 +37,27 @@ router.get('/user', (req, res, next) => {
   })
 });
 
+// GET em user para obter todos os utilizadores
+router.get('/allUsers', (req, res, next) => {
+    let user_type = req.headers.user_type;
+    UserModel.find({ user_type: user_type }, (error, user) => {
+      if (error) return console.log(error)
+      return res.status(200).json({
+        title: 'Users Grabbed',
+        users: user
+      })
+    })
+});
+
+
+
 // Registar um user
 router.post('/user', function(req, res){
   const newUser = {
     name: req.body.name,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 10),
-    type: 'User',
+    user_type: 'User',
     balance: {
       EUR: '0.00',
       USD: '0.00',
@@ -83,9 +99,7 @@ router.post('/login', (req,res, next) =>{
   })
 })
 
-// Editar um user
-
-// Editar um user
+//PUT para User
 router.put('/user', function(req, res){
   UserModel.findOne({ _id: req.body._id }, (err, user) =>{
     if(req.body.password!=null){
@@ -107,12 +121,37 @@ router.put('/user', function(req, res){
         .then(dados => res.status(201).jsonp({dados: dados}))
         .catch(e => res.status(500).jsonp({error: e}))
     }
-    
   })
-  
-  /**/
 })
 
+/*router.put('/usersEditados', function(req, res){
+      req.body.forEach((obj) =>{
+        User.alterar(obj)
+        .then(dados => res.status(201).jsonp({dados: dados}))
+        .catch(e => res.status(500).jsonp({error: e}))
+      })
+})*/
+
+router.put('/usersEditados', function(req, res){
+  User.updateMany(req.body)
+    .then(promiseArray => res.status(201).jsonp({dados: promiseArray}))
+    .catch(e => res.status(500).jsonp({error: e}))
+})
+
+// -------------------------- Evento ------------------------------
+//GET para Eventos
+router.get('/evento', function(req, res) {
+  let sportType = req.headers.sporttype
+  EventModel.find({ sport: sportType}, (error, event) => {
+    if (error) return console.log(error)
+    return res.status(200).json({
+      title: 'Events by Sport Grabbed',
+      events: event
+    })
+  })
+});
+
+//POST para Eventos
 router.post('/evento', function(req, res){
   var today = new Date();
   var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
@@ -138,25 +177,15 @@ Event.inserir(newEvento)
   .catch(e => res.status(500).jsonp({error: 'erro'}))
 })
 
-
-
-// Listar todas os dominios
-/*router.get('/events', function(req, res) {
-  Event.listar()
-    .then(dados => res.status(200).jsonp(dados) )
+//PUT para Eventos
+router.put('/evento', function(req, res){
+  console.log(req.body)
+  Event.alterar(req.body)
+    .then(dados => res.status(201).jsonp({dados: dados}))
     .catch(e => res.status(500).jsonp({error: e}))
-});*/
+})
 
-router.get('/evento', function(req, res) {
-  let sportType = req.headers.sporttype
-  EventModel.find({ sport: sportType}, (error, event) => {
-    if (error) return console.log(error)
-    return res.status(200).json({
-      title: 'Events by Sport Grabbed',
-      events: event
-    })
-  })
-});
+// -------------------------- Bet ------------------------------
 
 // GET em Bet
 router.get('/bet', (req, res, next) => {
@@ -175,10 +204,38 @@ router.get('/bet', (req, res, next) => {
   })
 });
 
+// GET em allBets para devolver apostas em aberto
+router.get('/allBets', (req, res, next) => {
+  let state = req.headers.state;
+  
+  BetModel.find({ state: state }, (error, bet) => {
+    if (error) return console.log(error)
+    return res.status(200).json({
+      title: 'Bets Grabbed',
+      bets: bet
+    })
+  })
+});
+
+
 router.post('/bet', function(req, res){
   Bet.inserir(req.body)
     .then(dados => res.status(201).jsonp({dados: dados}))
     .catch(e => res.status(500).jsonp({error: 'erro'}))
+})
+
+/*router.put('/betsEditadas', function(req, res){
+  req.body.forEach((obj) =>{
+    Bet.alterar(obj)
+    .then(dados => res.status(201).jsonp({dados: dados}))
+    .catch(e => res.status(500).jsonp({error: e}))
+  })
+})*/
+
+router.put('/betsEditadas', function(req, res){
+  Bet.updateMany(req.body)
+    .then(promiseArray => res.status(201).jsonp({dados: promiseArray}))
+    .catch(e => res.status(500).jsonp({error: e}))
 })
 
 

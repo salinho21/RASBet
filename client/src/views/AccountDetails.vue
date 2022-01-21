@@ -1,10 +1,11 @@
 <template>
     <v-app class="stickypage">
         <Header/>
+        <v-content>
         <v-container>
             <v-layout justify-center row wrap>
                 <v-flex xs12 sm12 md12 lg6>
-                    <v-card class="mt-16" color="indigo darken-4" elevation="10">
+                    <v-card color="indigo darken-4" elevation="10">
                         <v-row >
                             <v-col>
                                 <v-card-title class="white--text text-h4 mr-5">
@@ -213,6 +214,7 @@
                 </v-flex>
             </v-layout>
             </v-container>
+            </v-content>
         <Footer/>
     </v-app>
 </template>
@@ -335,6 +337,7 @@ export default {
 
         closeConfirmSubmitv2(){
             this.openConfirmSubmitv2 = false
+            location.reload()
         }
        
     }

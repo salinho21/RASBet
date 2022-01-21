@@ -1,6 +1,8 @@
 <template>
     <v-app>
         <Header/>
+        <v-content>
+        <v-container>
             <v-layout justify-center row wrap>
                 <v-flex xs12 sm12 md12 lg7>
                     <v-card class="mt-12" color="indigo darken-4" elevation="10">
@@ -115,6 +117,8 @@
                     </v-dialog> 
                 </v-flex>
             </v-layout>
+            </v-container>
+            </v-content>
         <Footer/>
     </v-app>
 </template>

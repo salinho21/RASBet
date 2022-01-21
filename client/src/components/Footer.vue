@@ -1,47 +1,30 @@
 <template>
   <v-footer
-    dark
+    color="primary indigo darken-4"
     padless
-    class="mt-16"
+    bottom
   >
-    <v-card
-      class="flex"
-      flat
-      tile
-      height="100%"
-      
+    <v-row
+      justify="center"
+      no-gutters
     >
-      <v-card-title class="indigo darken-4" height="1">
-        <v-btn
+      <v-btn
         v-for="link in links"
         :key="link"
         color="white"
         text
         rounded
-
+        class="my-2"
       >
         {{ link }}
       </v-btn>
-
-        <v-spacer></v-spacer>
-
-        <v-btn
-          v-for="icon in icons"
-          :key="icon"
-          class="mx-4"
-          dark
-          icon
-        >
-          <v-icon size="28px">
-            {{ icon }}
-          </v-icon>
-        </v-btn>
-      </v-card-title>
-
-      <v-card-text class="py-2 white--text text-center">
+      <v-col
+        class="grey darken-4 text-center white--text"
+        cols="12"
+      >
         {{ new Date().getFullYear() }} — <strong>RASBet</strong>
-      </v-card-text>
-    </v-card>
+      </v-col>
+    </v-row>
   </v-footer>
 </template>
 

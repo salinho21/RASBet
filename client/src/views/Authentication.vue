@@ -26,6 +26,7 @@
                           <v-text-field
                             v-model="email"
                             label="Email"
+                            autofocus="true"
                             prepend-icon="email"
                             type="text"
                             color="indigo darken-4"
@@ -35,6 +36,7 @@
                             v-model="password"
                             label="Password"
                             prepend-icon="lock"
+                            autofocus="true"
                             type="password"
                             color="indigo darken-4"
                           />

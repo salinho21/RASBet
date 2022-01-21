@@ -1,9 +1,9 @@
 <template>
     <v-app>
         <Header/>
-            <v-container>
-                <v-layout justify-center row wrap>
-                    <v-flex xs12 sm12 md12 lg7>
+            <v-container >
+                <v-layout justify-center row wrap >
+                    <v-flex xs12 sm12 md12 lg7 >
                         <v-card class="mt-12" color="indigo darken-4" elevation="10">
                             <v-row >
                                 <v-col>
@@ -16,7 +16,7 @@
                                 </v-col>
                             </v-row>
                         </v-card>
-                        <v-card class="mt-2" elevation="10" >
+                        <v-card class="mt-2 mb-16" elevation="10" >
                             <v-form v-model="valid" ref="form">
                                 <v-row>
                                     <v-col cols="3">
@@ -273,6 +273,7 @@
                     </v-flex>
                 </v-layout>
             </v-container>
+        
         <Footer/>
     </v-app>
 </template>

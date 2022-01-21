@@ -28,7 +28,8 @@ var userSchema = new mongoose.Schema(
         }],
         bet_history :[{
           betID: String
-        }]
+        }],
+        notificacoes: String
         
   });
 

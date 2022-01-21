@@ -1,10 +1,11 @@
 <template>
     <v-app class="stickypage">
         <Header/>
+        <v-content class="mb-10">
         <v-container>
             <v-layout justify-center row wrap>
                 <v-flex xs12 sm12 md12 lg6>
-                    <v-card class="mt-16" color="indigo darken-4" elevation="10">
+                    <v-card color="indigo darken-4" elevation="10">
                         <v-row >
                             <v-col>
                                 <v-card-title class="white--text text-h4 mr-5">
@@ -28,14 +29,14 @@
                                 hide-details
                             ></v-text-field>
                             </v-card-title>
-                            <v-data-table :headers="headers" :items="movimentos" :search="search" :single-expand="singleExpand" :expanded.sync="expanded" item-key="_id" show-expand class="elevation-1 mt-5">
+                            <v-data-table :headers="headers" :items="movimentos" :search="search" :single-expand="singleExpand" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :expanded.sync="expanded" item-key="_id" show-expand class="elevation-1 mt-5">
                                 <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
                                     <p class="mt-5" v-if="item.tipo=='Levantamento'">Valor de Levantamento: {{item.amountInicial}} <v-spacer class="mt-1"/> Saldo Final: {{item.saldo_final}}</p>
                                     <p class="mt-5" v-if="item.tipo=='Depósito'">Valor de Depósito: {{item.amountInicial}} <v-spacer class="mt-1"/> Saldo Final: {{item.saldo_final}}</p>
                                     <p class="mt-5" v-if="item.tipo=='Conversão'">Valor a Converter: {{item.amountInicial}} <v-spacer class="mt-1"/> Valor Obtido: {{item.amountFinal}} <v-spacer class="mt-1"/> Saldos Após Conversão: {{item.saldo_final}}</p>
-                                    <p class="mt-5" v-if="item.tipo=='Aposta'">Saldo Inicial: {{item.amountInicial}} <v-spacer class="mt-1"/> Saldo Final: {{item.saldo_final}}</p>
-                                    <p class="mt-5" v-if="item.tipo=='Aposta Ganha'">Ganhos de Aposta: {{item.amountInicial}} <v-spacer class="mt-1"/> Saldo Final: {{item.saldo_final}}</p>
+                                    <p class="mt-5" v-if="item.tipo=='Aposta'">Saldo Inicial: {{item.amountInicial}} <v-spacer class="mt-1"/>Valor da Aposta: {{item.amountFinal}} <v-spacer class="mt-1"/> Saldo Final: {{item.saldo_final}}</p>
+                                    <p class="mt-5" v-if="item.tipo=='Aposta Ganha'"> Saldo Inicial: {{item.amountInicial}}<v-spacer class="mt-1"/>Ganhos de Aposta: {{item.amountFinal}}<v-spacer class="mt-1"/> Saldo Final: {{item.saldo_final}}</p>
                                 </td>
                                 </template>
                                 
@@ -45,6 +46,7 @@
                 </v-flex>
             </v-layout>
             </v-container>
+            </v-content>
         <Footer/>
     </v-app>
 </template>
@@ -76,6 +78,8 @@ export default {
                 { text: '', value: 'data-table-expand' }
             ],
             movimentos: [],
+            sortBy: 'data',
+            sortDesc: true
         }
     },
 

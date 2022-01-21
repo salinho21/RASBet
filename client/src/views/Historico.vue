@@ -1,10 +1,11 @@
 <template>
     <v-app class="stickypage">
         <Header/>
-        <v-container>
+        <v-content>
+            <v-container>
             <v-layout justify-center row wrap>
                 <v-flex xs12 sm12 md12 lg6>
-                    <v-card class="mt-16" color="indigo darken-4" elevation="10">
+                    <v-card color="indigo darken-4" elevation="10">
                         <v-row >
                             <v-col>
                                 <v-card-title class="white--text text-h4 mr-5">
@@ -27,7 +28,7 @@
                                 hide-details
                             ></v-text-field>
                         </v-card-title>
-                        <v-data-table :headers="headers" :items="bets" :search="search" single-expand :expanded.sync="expanded" item-key="_id" show-expand class="elevation-1 mt-5">
+                        <v-data-table :headers="headers" :items="bets" :search="search" single-expand :expanded.sync="expanded" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" item-key="_id" show-expand class="elevation-1 mt-5">
                             <template v-slot:expanded-item="{ headers,item }">
                                 <tr :colspan="headers.length" v-for="i in bets.filter(bet=> !bet._id.indexOf(item._id))" :key="i.user_id">
                                     <div v-for="a in i.events" :key="a.eventID">
@@ -50,6 +51,7 @@
                 </v-flex>
             </v-layout>
             </v-container>
+            </v-content>
         <Footer/>
     </v-app>
 </template>
@@ -79,11 +81,13 @@ export default {
                 { text: 'Estado', value: 'state' },
                 { text: 'Odd', value: 'total_odd' },
                 { text: 'Valor', value: 'bet_ammount' },
-                { text: 'Ganhos', value: 'ganhos' },
+                { text: 'Valor a Ganhar', value: 'ganhos' },
                 { text: 'Data', value: 'date' },
                 { text: '', value: 'data-table-expand' }
             ],
-            bets: []
+            bets: [],
+            sortBy: 'date',
+            sortDesc: true
         }
     },
 

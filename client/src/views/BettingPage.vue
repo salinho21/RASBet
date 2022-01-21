@@ -59,10 +59,10 @@
                         <v-col cols="2" align="center">
                             <h4 class="mt-7">{{event.team1}}</h4>
                         </v-col>
-                        <v-col v-if="event.result_odd.tie=='0'" cols="1" align="center">
+                        <v-col v-if="event.result_odd.tie==''" cols="1" align="center">
                            
                         </v-col>
-                        <v-col v-if="event.result_odd.tie!='0'" cols="2" align="center">
+                        <v-col v-if="event.result_odd.tie!=''" cols="2" align="center">
                            <h4 class="mt-7">Empate</h4> 
                         </v-col>
                         <v-col cols="2" align="center">
@@ -71,7 +71,7 @@
                     </v-row>
                     <v-row no-gutters>
                         <v-col cols="2">
-                            <h4 class="pt-5 pl-5">{{event.date}}</h4>
+                            <h4 class="pt-5 pl-2">{{event.date}}</h4>
                         </v-col>
                         <v-col cols="3">
                             <h4 class="pt-5 pl-10">Estado: {{event.state}}</h4>
@@ -87,9 +87,9 @@
                                 <span>Home Team</span>
                             </v-tooltip>
                         </v-col>
-                        <v-col v-if="event.result_odd.tie=='0'" cols="1" align="center">
+                        <v-col v-if="event.result_odd.tie==''" cols="1" align="center">
                         </v-col>  
-                        <v-col v-if="event.result_odd.tie!='0'" cols="2" align="center">
+                        <v-col v-if="event.result_odd.tie!=''" cols="2" align="center">
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }"> 
                                     <v-btn  v-bind="attrs" v-on="on" class="mt-3 mb-4 white--text" width="100px" color="indigo darken-4" dense @click="addBoletim(event,event.result_odd.tie,'Empate')">
@@ -608,7 +608,7 @@ export default {
                         }
                     })
                     
-                    if(countAbertas==0 && !apostaPerdida){              
+                    if(countAbertas==0 && !apostaPerdida && obj.state!='Aposta Ganha'){              
                         obj.state = 'Aposta Ganha'
                         
                         this.users.forEach((u)=>{
@@ -616,33 +616,41 @@ export default {
                                 const myArray = obj.ganhos.split(" ");
                                 let valor = myArray[0]
                                 let moeda = myArray[1]
+                                let amountInicial
                                 let amountFinal
-                                if(moeda == 'EUR'){        
+                                if(moeda == 'EUR'){ 
+                                    amountInicial = u.balance.EUR + ' EUR'    
                                     u.balance.EUR = (parseFloat(u.balance.EUR)+parseFloat(valor)).toFixed(2)
                                     amountFinal = u.balance.EUR + ' EUR'
                                 }
                                 if(moeda == 'USD'){
+                                    amountInicial = u.balance.USD + ' USD' 
                                     u.balance.USD = (parseFloat(u.balance.USD)+parseFloat(valor)).toFixed(2)
                                     amountFinal = u.balance.USD + ' USD'
                                 }
                                 if(moeda == 'GBP'){
+                                    amountInicial = u.balance.GBP + ' GBP' 
                                     u.balance.GBP = (parseFloat(u.balance.GBP)+parseFloat(valor)).toFixed(2)
                                     amountFinal = u.balance.GBP + ' GBP'
                                 }
                                 if(moeda == 'ADA'){
+                                    amountInicial = u.balance.ADA + ' ADA' 
                                     u.balance.ADA = (parseFloat(u.balance.ADA)+parseFloat(valor)).toFixed(2)
                                     amountFinal = u.balance.ADA + ' ADA'
                                 }
                                 let movimento = {
                                     tipo: 'Aposta Ganha',
-                                    amountInicial: obj.ganhos,
-                                    amountFinal: 'N/a',
+                                    amountInicial: amountInicial,
+                                    amountFinal: obj.ganhos,
                                     data: new Date().toLocaleString(),
                                     saldo_final: amountFinal
                                 }
+
+                                u.notificacoes = 'Ganhou uma aposta no valor de ' + obj.ganhos + ' em ' + new Date().toLocaleString(),
                                 u.balance_history.push(movimento)
                                 console.log(movimento)
                                 this.usersEditados.push(u)
+                                console.log(this.usersEditados)
                             }
                         })
                         editada = true             
@@ -672,8 +680,8 @@ export default {
                     },(error) =>{
                         console.log(error);
                 });
-        }
-
+            }
+            
         },
 
         deleteBoletim(){
@@ -712,7 +720,7 @@ export default {
             if(isNaN(parseFloat(this.betData.bet_ammount)*parseFloat(this.betData.total_odd))){
                 this.betData.ganhos = ''
             }else{
-                this.betData.ganhos = (parseFloat(this.betData.bet_ammount)*parseFloat(this.betData.total_odd)).toFixed(2) + ' EUR'
+                this.betData.ganhos = (parseFloat(this.betData.bet_ammount)*parseFloat(this.betData.total_odd)).toFixed(2) + ' ' + this.userData.currentCoin
             }
         },
         updateGanhosSimples(){
@@ -728,7 +736,7 @@ export default {
             if(isNaN(parseFloat(this.betData.bet_ammount)*parseFloat(this.betData.total_odd))){
                 this.betData.ganhos = ''
             }else{
-                this.betData.ganhos = (parseFloat(this.betData.bet_ammount)*parseFloat(this.betData.total_odd)).toFixed(2) + ' EUR'
+                this.betData.ganhos = (parseFloat(this.betData.bet_ammount)*parseFloat(this.betData.total_odd)).toFixed(2) + ' ' + this.userData.currentCoin
             }
         },
 
@@ -804,7 +812,6 @@ export default {
         },
 
         submitBet(){
-            console.log(this.betData)
             axios.post(`http://localhost:8001/bet`, this.betData)
                 .then(function(response){
                     console.log(response)
@@ -832,7 +839,7 @@ export default {
             let movimento ={
                 tipo: 'Aposta',
                 amountInicial: this.saldo + ' ' + this.userData.currentCoin,
-                amountFinal: 'N/a',
+                amountFinal: this.betData.bet_ammount + ' ' + this.userData.currentCoin,
                 data: new Date().toLocaleString(),
                 saldo_final: this.userData.balance.EUR + ' ' + this.userData.currentCoin
             }

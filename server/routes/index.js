@@ -30,7 +30,8 @@ router.get('/user', (req, res, next) => {
           balance: user.balance,
           currentCoin: user.currentCoin,
           balance_history: user.balance_history,
-          user_type: user.user_type
+          user_type: user.user_type,
+          notificacoes: user.notificacoes
         }
       })
     })
@@ -65,7 +66,8 @@ router.post('/user', function(req, res){
       ADA: '0.00'
     },
     currentCoin: 'EUR',
-    balance_history: []
+    balance_history: [],
+    notificacoes: ''
   }
   User.inserir(newUser)
     .then(dados => res.status(201).jsonp({dados: dados}))
@@ -124,13 +126,7 @@ router.put('/user', function(req, res){
   })
 })
 
-/*router.put('/usersEditados', function(req, res){
-      req.body.forEach((obj) =>{
-        User.alterar(obj)
-        .then(dados => res.status(201).jsonp({dados: dados}))
-        .catch(e => res.status(500).jsonp({error: e}))
-      })
-})*/
+
 
 router.put('/usersEditados', function(req, res){
   User.updateMany(req.body)
@@ -233,6 +229,7 @@ router.post('/bet', function(req, res){
 })*/
 
 router.put('/betsEditadas', function(req, res){
+  console.log(res.body)
   Bet.updateMany(req.body)
     .then(promiseArray => res.status(201).jsonp({dados: promiseArray}))
     .catch(e => res.status(500).jsonp({error: e}))
